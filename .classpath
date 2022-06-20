@@ -17,7 +17,11 @@
 		</attributes>
 	</classpathentry>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	<classpathentry kind="lib" path="C:/Users/julia/Desktop/ressourcesTutoriel/json-20210307.jar">
+=======
+	<classpathentry kind="lib" path="jimObjModelImporterJFX.jar">
+>>>>>>> Stashed changes
 =======
 	<classpathentry kind="lib" path="jimObjModelImporterJFX.jar">
 >>>>>>> Stashed changes
