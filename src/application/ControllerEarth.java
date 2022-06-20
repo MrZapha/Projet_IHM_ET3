@@ -70,20 +70,6 @@ public class ControllerEarth implements Initializable {
         }
         MeshView[] meshViews = objImporter.getImport();
         Group earth = new Group(meshViews);
-
-        // Draw a line
-        circleEarth(earth);
-        // Draw an helix
-
-        // Draw city on the earth
-        displayTown(earth,"Brest",(float)48.447911,(float)-4.418539);
-        displayTown(earth,"Marseille",(float)43.435555,(float)5.213611);
-        displayTown(earth,"New York",(float)40.639751,(float)-73.778925);
-        displayTown(earth,"Cape Town",(float)-33.964806,(float)18.601667);
-        displayTown(earth,"Istanbul",(float)40.976922,(float)28.814606);
-        displayTown(earth,"Reykjavik",(float)64.13,(float)-21.940556);
-        displayTown(earth,"Singapore",(float)1.350189,(float)103.994433);
-        displayTown(earth,"Seoul",(float)37.469075,(float)126.450517);
         
         root3D.getChildren().add(earth);
 
@@ -106,7 +92,7 @@ public class ControllerEarth implements Initializable {
         
         // Create scene
         // ...
-        SubScene subscene = new SubScene(root3D,600,600,true,SceneAntialiasing.BALANCED);
+        SubScene subscene = new SubScene(root3D,500,580,true,SceneAntialiasing.BALANCED);
         subscene.setCamera(camera);
         subscene.setFill(Color.GREY);
         pane3D.getChildren().addAll(subscene);
@@ -138,61 +124,6 @@ public class ControllerEarth implements Initializable {
         
         new CameraManager(camera,pane3D,root3D);
         
-        try(Reader reader = new FileReader("data.json")){
-        	BufferedReader rd = new BufferedReader(reader);
-        	String jsonText = readAll(rd);
-        	JSONObject jsonRoot = new JSONObject(jsonText);
-        	
-        	JSONArray resultatRecherche = jsonRoot.getJSONObject("query").getJSONArray("search");
-        	JSONObject article = resultatRecherche.getJSONObject(0);
-        	System.out.print(article.getString("title")+"\n");
-        	System.out.print(article.getString("snippet")+"\n");
-
-        	System.out.print(article.getInt("wordcount")+"\n");
-        	
-        	article = resultatRecherche.getJSONObject(2);
-        	System.out.print("Titre article 2 : "+article.getString("title")+"\n");
-        	
-        	jsonRoot = readJsonFromUrl("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=Whale&format=json");
-            resultatRecherche = jsonRoot.getJSONObject("query").getJSONArray("search");
-        	article = resultatRecherche.getJSONObject(0);
-            System.out.print("Article : "+article.getString("snippet")+"\n");
-        	
-        }catch(IOException e) {
-        	e.printStackTrace();
-        }
-        
-	}
-	
-	private static String readAll(Reader rd) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		int cp;
-		while((cp = rd.read()) != -1) {
-			sb.append((char)cp);
-		}
-		return sb.toString();
-	}
-	
-	public static JSONObject readJsonFromUrl(String url) {
-		String json ="";
-		HttpClient client = HttpClient.newBuilder()
-				.version(Version.HTTP_1_1)
-				.followRedirects(Redirect.NORMAL)
-				.connectTimeout(Duration.ofSeconds(20))
-				.build();
-		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create(url))
-				.timeout(Duration.ofMinutes(2))
-				.header("Content-Type","application/json")
-				.GET()
-				.build();
-		try {
-			json = client.sendAsync(request, BodyHandlers.ofString())
-					.thenApply(HttpResponse::body).get(10,TimeUnit.SECONDS);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		return new JSONObject(json);
 	}
 	
     public static void circleEarth(Group parent) {
