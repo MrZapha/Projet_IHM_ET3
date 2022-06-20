@@ -1,4 +1,4 @@
-package JSon;
+package Json;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -12,6 +12,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Json {
@@ -24,7 +25,7 @@ public class Json {
     	return sb.toString();
     }
 	
-	public static JSONObject readJsonFromUrl(String url) {
+	static JSONObject readJsonFromUrl(String url) {
 		String json="";
 		HttpClient client = HttpClient.newBuilder()
 				.version(Version.HTTP_1_1)
@@ -46,5 +47,22 @@ public class Json {
 			e.printStackTrace();
 		}
 		return new JSONObject(json);
+	}
+	
+	public static JSONObject readJsonWithGeoHash(String nom,int nb_caractere) {
+		String s="https://api.obis.org/v3/occurrence/grid/"+nb_caractere+"?scientificname="+nom;
+		return readJsonFromUrl(s);
+	}
+	
+	public static void main(String args[]) {
+		JSONObject jsonRoot= readJsonWithGeoHash("Delphinidae",3);
+		JSONArray resultatRecherche = jsonRoot.getJSONObject("query").getJSONArray("search");
+	   	JSONObject article = resultatRecherche.getJSONObject(0);
+	   	System.out.println(article.getString("title"));
+	   	System.out.println(article.getString("snippet"));
+	   	System.out.println(article.getInt("wordcount"));
+	   	article = resultatRecherche.getJSONObject(1);
+	   	System.out.println(article.getString("title"));
+	   	System.out.println(article.getString("snippet"));
 	}
 }

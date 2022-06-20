@@ -1,4 +1,4 @@
-package Donnees;
+package donnees;
 
 import java.time.LocalDate;
 import com.ludovic.vimont.GeoHashHelper;

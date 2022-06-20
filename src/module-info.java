@@ -1,15 +1,9 @@
-module Projet_IHM_ET3 {
+module Projet_IHM_Obis3D {
 	requires javafx.controls;
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+	requires javafx.fxml;
+	requires jimObjModelImporterJFX;
 	requires java.net.http;
 	requires org.json;
-=======
-	requires javafx.fxml;
->>>>>>> Stashed changes
-=======
-	requires javafx.fxml;
->>>>>>> Stashed changes
 	
 	opens application to javafx.graphics, javafx.fxml;
 }
