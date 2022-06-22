@@ -13,10 +13,9 @@ import com.ludovic.vimont.Location;
 import Json.Json;
 
 public class Donne {
-	private int s=0;
 	private ArrayList<Enregistrement> list;
 	
-	public Donne() {
+	Donne() {
 		list=new ArrayList<Enregistrement>();
 	}
 	
@@ -24,44 +23,38 @@ public class Donne {
 		list.add(e);
 	}
 	
-	int nb_signalement_region(String nom,String region) {
-		s=0;
-		Consumer<Enregistrement> conter_espece = new Consumer<Enregistrement>() {
-			@Override
-			public void accept(Enregistrement t) {
-				if (t.get_nom().equals(nom) && t.get_region().equals(region)) {
-					s++;
-				}
-				
-			};
-        };
-		
-		list.forEach(conter_espece);
-		return s;
-	}
-	
 	public ArrayList<Enregistrement> get_list() {
 		return list;
 	}
-	
-	public static Donne init() {
-		Donne d=new Donne();
-		JSONObject jsonRoot=Json.init();
+	private void add_Enregistrement(JSONObject jsonRoot) {
 		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
 		int taille=resultatRecherche.length();
 		for(int i=0;i<taille;i++) {
 			JSONObject article = resultatRecherche.getJSONObject(i);
 	   		int nb=article.getJSONObject("properties").getInt("n");
 	   		JSONObject geometry =article.getJSONObject("geometry");
-	   		Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),"Delphinidae",LocalDate.now(),nb);
-	   		d.add_Enregistrement(e);
+	   		Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),"Delphinidae",nb);
+	   		this.add_Enregistrement(e);
 		}
+	}
+	
+	public static Donne init() {
+		Donne d=new Donne();
+		JSONObject jsonRoot=Json.init();
+		d.add_Enregistrement(jsonRoot);
+		return d;
+	}
+	
+	public static Donne donne_From_URL(String nom,int nb_caractere) {
+		Donne d=new Donne();
+		JSONObject jsonRoot=Json.readJsonWithGeoHash(nom, nb_caractere);
+		d.add_Enregistrement(jsonRoot);
 		return d;
 	}
 	
 	public static void main(String args[]) {
-		Donne d=init();
+		Donne d=donne_From_URL("Delphinidae",3);
 		//System.out.println(d.nb_signalement_region("Dolphin",20.0,30.0));
-		//System.out.println(d.list);
+		System.out.println(d.list);
 	}
 }
