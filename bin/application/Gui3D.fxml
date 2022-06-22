@@ -11,13 +11,33 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
-fx:controller="application.ControllerEarth">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox prefHeight="640.0" prefWidth="500.0">
          <children>
             <Pane fx:id="pane3D" prefHeight="580.0" prefWidth="500.0" />
+            <Pane prefHeight="60.0" prefWidth="500.0">
+               <children>
+                  <Text layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Légende :" />
+                  <Pane layoutX="67.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" />
+                  <Pane layoutX="107.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" />
+                  <Pane layoutX="147.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" />
+                  <Pane layoutX="187.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" />
+                  <Pane layoutX="227.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" />
+                  <Pane layoutX="267.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" />
+                  <Pane layoutX="307.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" />
+                  <Pane layoutX="347.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" />
+                  <Text layoutX="64.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+                  <Text layoutX="104.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1" />
+                  <Text layoutX="144.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2" />
+                  <Text layoutX="184.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3" />
+                  <Text layoutX="224.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" />
+                  <Text layoutX="264.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="5" />
+                  <Text layoutX="304.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="6" />
+                  <Text layoutX="344.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="7" />
+                  <Text layoutX="384.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="8" />
+               </children>
+            </Pane>
          </children>
       </VBox>
       <VBox prefHeight="200.0" prefWidth="400.0">
@@ -27,7 +47,7 @@ fx:controller="application.ControllerEarth">
                   <Insets left="2.0" />
                </VBox.margin>
             </Text>
-            <TextField>
+            <TextField fx:id="txtEspece">
                <VBox.margin>
                   <Insets bottom="20.0" top="5.0" />
                </VBox.margin>
@@ -39,7 +59,7 @@ fx:controller="application.ControllerEarth">
                         <Insets left="2.0" right="5.0" />
                      </HBox.margin>
                   </Text>
-                  <DatePicker>
+                  <DatePicker fx:id="dateDebut">
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin>
@@ -49,7 +69,7 @@ fx:controller="application.ControllerEarth">
                         <Insets right="5.0" />
                      </HBox.margin>
                   </Text>
-                  <DatePicker />
+                  <DatePicker fx:id="dateFin" />
                </children>
             </HBox>
             <HBox prefHeight="41.0" prefWidth="400.0">
@@ -68,36 +88,36 @@ fx:controller="application.ControllerEarth">
             </HBox>
             <HBox prefHeight="80.0" prefWidth="400.0">
                <children>
-                  <TextField prefWidth="150.0">
+                  <TextField fx:id="txtLocaGeo" prefWidth="150.0">
                      <HBox.margin>
                         <Insets left="25.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </TextField>
-                  <TextField prefWidth="150.0">
+                  <TextField fx:id="txtPreciGeo" prefWidth="150.0">
                      <HBox.margin>
                         <Insets left="50.0" right="25.0" top="5.0" />
                      </HBox.margin>
                   </TextField>
                </children>
             </HBox>
-            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="160.0" text="Valider">
+            <Button fx:id="btnValider" alignment="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="160.0" text="Valider">
                <VBox.margin>
                   <Insets bottom="5.0" left="120.0" />
                </VBox.margin>
             </Button>
             <HBox prefHeight="80.0" prefWidth="400.0">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Lecture">
+                  <Button fx:id="btnLecture" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Lecture">
                      <HBox.margin>
                         <Insets left="20.0" right="30.0" top="10.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Pause">
+                  <Button fx:id="btnPause" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Pause">
                      <HBox.margin>
                         <Insets right="30.0" top="10.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Stop">
+                  <Button fx:id="btnStop" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Stop">
                      <HBox.margin>
                         <Insets right="20.0" top="10.0" />
                      </HBox.margin>
@@ -109,13 +129,13 @@ fx:controller="application.ControllerEarth">
                   <Insets bottom="5.0" left="2.0" top="10.0" />
                </VBox.margin>
             </Text>
-            <TreeView prefHeight="200.0" prefWidth="200.0" />
+            <TreeView fx:id="treeSignalement" prefHeight="200.0" prefWidth="200.0" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Espèces présentes sur le GeoHash :">
                <VBox.margin>
                   <Insets bottom="5.0" left="2.0" top="10.0" />
                </VBox.margin>
             </Text>
-            <ListView prefHeight="200.0" prefWidth="200.0" />
+            <ListView fx:id="listEspece" prefHeight="200.0" prefWidth="200.0" />
          </children>
       </VBox>
    </children>
