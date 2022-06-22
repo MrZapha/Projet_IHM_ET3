@@ -114,6 +114,8 @@ public class ControllerEarth implements Initializable {
         Group earth = new Group(meshViews);
         
         root3D.getChildren().add(earth);
+        
+        drawFromFile(root3D);
 
         // Add a camera group
         PerspectiveCamera camera = new PerspectiveCamera(true);
