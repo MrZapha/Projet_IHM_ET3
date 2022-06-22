@@ -13,6 +13,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +25,8 @@ import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import com.ludovic.vimont.GeoHashHelper;
 import com.ludovic.vimont.Location;
 
+import Donnees.Donne;
+import Donnees.Enregistrement;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -44,8 +47,11 @@ import javafx.scene.input.PickResult;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.MeshView;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Sphere;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
@@ -109,6 +115,22 @@ public class ControllerEarth implements Initializable {
         Group earth = new Group(meshViews);
         
         root3D.getChildren().add(earth);
+        
+        //Draw from Json Delphinidae file
+        Donne d = Donne.init();
+        ArrayList<Enregistrement> registeredList = d.get_list();
+        int max = registeredList.get(0).get_nombre();
+        int[] tableauEchelle = new int[8];
+        for(int i=0;i<8;i++) {
+        	tableauEchelle[i] = 1+i*(max-1)/8;
+        }
+        for(int i=0;i<registeredList.size();i++) {
+        	Polygon poly = new Polygon(registeredList.get(i).get_region());
+        	final PhongMaterial greenMaterial = new PhongMaterial();
+            greenMaterial.setDiffuseColor(Color.rgb(0,150,0,0));
+            greenMaterial.setSpecularColor(Color.GREEN);
+        	root3D.getChildren().add(poly);
+        }
 
         // Add a camera group
         PerspectiveCamera camera = new PerspectiveCamera(true);

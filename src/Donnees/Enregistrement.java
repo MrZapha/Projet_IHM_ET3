@@ -3,13 +3,13 @@ package Donnees;
 import org.json.JSONArray;
 
 public class Enregistrement {
-	private Double[] region;
+	private double[] region;
 	private String nom;
 	private int nb;
 	
 	public Enregistrement(JSONArray region,String nom, int nb) {
 		int taille=region.length();
-		this.region=new Double[2*taille];
+		this.region=new double[2*taille];
 		for (int i=0;i<taille;i+=2) {
 			this.region[i]=region.getJSONArray(i).getDouble(0);
 			this.region[i+1]=region.getJSONArray(i).getDouble(1);
@@ -19,7 +19,7 @@ public class Enregistrement {
 	}
 	
 	
-	public Double[] get_region() {
+	public double[] get_region() {
 		return region;
 	}
 	
