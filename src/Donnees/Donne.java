@@ -40,8 +40,8 @@ public class Donne {
 		return s;
 	}
 	
-	public int nb_signalement_region(String nom,Double longitude,Double latitude) {
-		return nb_signalement_region(nom,GeoHashHelper.getGeohash(new Location("",longitude,latitude)));
+	public ArrayList<Enregistrement> get_list() {
+		return list;
 	}
 	
 	public static Donne init() {
