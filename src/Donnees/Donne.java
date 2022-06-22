@@ -4,8 +4,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.ludovic.vimont.GeoHashHelper;
 import com.ludovic.vimont.Location;
+
+import Json.Json;
 
 public class Donne {
 	private int s=0;
@@ -41,19 +46,22 @@ public class Donne {
 	
 	public static Donne initialize() {
 		Donne d=new Donne();
-		
+		JSONObject jsonRoot=Json.initialize();
+		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
+		int taille=resultatRecherche.length();
+		for(int i=0;i<taille;i++) {
+			JSONObject article = resultatRecherche.getJSONObject(i);
+	   		int nb=article.getJSONObject("properties").getInt("n");
+	   		JSONObject geometry =article.getJSONObject("geometry");
+	   		Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates"),"Delphinidae",LocalDate.now(),nb);
+	   		d.add_Enregistrement(e);
+		}
 		return d;
 	}
 	
 	public static void main(String args[]) {
-		Donne d=new Donne();
-		Enregistrement e=new Enregistrement(20.0,30.0,"Dolphin",LocalDate.now());
-		d.add_Enregistrement(e);
-		Enregistrement f=new Enregistrement(GeoHashHelper.getGeohash(new Location("dolphin",40,30)),"Dolphin",LocalDate.now());
-		d.add_Enregistrement(f);
-		Enregistrement g=new Enregistrement(GeoHashHelper.getGeohash(new Location("dolphin",20,30)),"Dolphin",LocalDate.now());
-		d.add_Enregistrement(g);
-		System.out.println(d.nb_signalement_region("Dolphin",20.0,30.0));
+		Donne d=initialize();
+		//System.out.println(d.nb_signalement_region("Dolphin",20.0,30.0));
 		System.out.println(d.list);
 	}
 }

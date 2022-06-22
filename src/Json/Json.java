@@ -1,5 +1,7 @@
 package Json;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
@@ -54,10 +56,23 @@ public class Json {
 		return readJsonFromUrl(s);
 	}
 	
+	public static JSONObject initialize() {
+		try (Reader reader = new FileReader("Delphinidae.json")){
+        	BufferedReader rd=new BufferedReader(reader);
+        	String jsonText =readAll(rd);
+        	JSONObject jsonRoot = new JSONObject(jsonText);
+        	return jsonRoot;
+        }catch (IOException e) {
+        	e.printStackTrace();
+        	return null;
+        }
+	}
+	
 	public static void main(String args[]) {
 		JSONObject jsonRoot= readJsonWithGeoHash("Delphinidae",4);
 		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
 	   	JSONObject article = resultatRecherche.getJSONObject(0);
+	   	System.out.println(article);
 	   	int nb=article.getJSONObject("properties").getInt("n");
 	   	JSONObject geometry =article.getJSONObject("geometry");
 	   	System.out.println(geometry.getJSONArray("coordinates"));
