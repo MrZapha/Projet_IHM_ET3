@@ -55,15 +55,18 @@ public class Json {
 	}
 	
 	public static void main(String args[]) {
-		JSONObject jsonRoot= readJsonWithGeoHash("Delphinidae",3);
-		//JSONObject resultatRecherche = jsonRoot.getJSONObject("geometry");
-	   	/*JSONObject article = resultatRecherche.getJSONObject(0);
-	   	System.out.println(article.getString("title"));
-	   	System.out.println(article.getString("snippet"));
+		JSONObject jsonRoot= readJsonWithGeoHash("Delphinidae",4);
+		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
+	   	JSONObject article = resultatRecherche.getJSONObject(0);
+	   	int nb=article.getJSONObject("properties").getInt("n");
+	   	JSONObject geometry =article.getJSONObject("geometry");
+	   	System.out.println(geometry.getJSONArray("coordinates"));
+	   	System.out.println(nb);
+	   	/*System.out.println(article.getString("snippet"));
 	   	System.out.println(article.getInt("wordcount"));
 	   	article = resultatRecherche.getJSONObject(1);
 	   	System.out.println(article.getString("title"));
 	   	System.out.println(article.getString("snippet"));*/
-		System.out.println(jsonRoot);
+
 	}
 }
