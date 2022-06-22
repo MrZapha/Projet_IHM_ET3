@@ -114,21 +114,6 @@ public class ControllerEarth implements Initializable {
         Group earth = new Group(meshViews);
         
         root3D.getChildren().add(earth);
-        
-        //Draw from Json Delphinidae file
-        Donne d = Donne.init();
-        ArrayList<Enregistrement> registeredList = d.get_list();
-        int max = registeredList.get(0).get_nombre();
-        int[] tableauEchelle = new int[8];
-        for(int i=0;i<8;i++) {
-        	tableauEchelle[i] = 1+i*(max-1)/8;
-        }
-        for(int i=0;i<registeredList.size();i++) {
-        	registeredList.get(i).get_region();
-        	for(int j=0;j<5;j++) {
-        		geoCoordTo3dCoord(float lat, float lon);
-        	}
-        }
 
         // Add a camera group
         PerspectiveCamera camera = new PerspectiveCamera(true);
@@ -186,6 +171,30 @@ public class ControllerEarth implements Initializable {
         
 	}
 	
+	public static void drawFromFile(Group root3D) {
+		//Draw from Json Delphinidae file
+        Donne d = Donne.init();
+        ArrayList<Enregistrement> registeredList = d.get_list();
+        int max = registeredList.get(0).get_nombre();
+        int[] tableauEchelle = new int[8];
+        for(int i=0;i<8;i++) {
+        	tableauEchelle[i] = i*max/8;
+        }
+        for(int i=0;i<registeredList.size();i++) {
+        	ArrayList<Point2D> region = registeredList.get(i).get_region();
+        	for(int j=0;j<5;j++) {
+        		Point3D spaceCoord = geoCoordTo3dCoord((float)region.get(j).getX(), (float)region.get(j).getY());
+        		Cylinder cyl = createLine(spaceCoord, spaceCoord.multiply(1.10));
+        		final PhongMaterial greenMaterial = new PhongMaterial();
+                greenMaterial.setDiffuseColor(Color.rgb(0,150,0,0));
+                greenMaterial.setSpecularColor(Color.GREEN);
+                cyl.setMaterial(greenMaterial);
+        		
+                root3D.getChildren().add(cyl);
+        	}
+        }
+	}
+	
     public static void circleEarth(Group parent) {
     	final PhongMaterial greenMaterial = new PhongMaterial();
         greenMaterial.setDiffuseColor(Color.rgb(0,150,0,0));
@@ -219,7 +228,7 @@ public class ControllerEarth implements Initializable {
 
 
     // From Rahel Lüthy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
-    public Cylinder createLine(Point3D origin, Point3D target) {
+    public static Cylinder createLine(Point3D origin, Point3D target) {
         Point3D yAxis = new Point3D(0, 1, 0);
         Point3D diff = target.subtract(origin);
         double height = diff.magnitude();
