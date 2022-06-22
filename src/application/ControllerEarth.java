@@ -17,6 +17,8 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
+import org.controlsfx.control.textfield.TextFields;
+
 import com.interactivemesh.jfx.importer.ImportException;
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import com.ludovic.vimont.GeoHashHelper;
@@ -32,6 +34,11 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.PointLight;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.PickResult;
 import javafx.scene.layout.Pane;
@@ -47,6 +54,39 @@ import javafx.scene.transform.Translate;
 public class ControllerEarth implements Initializable {
 	@FXML
 	private Pane pane3D;
+	
+	@FXML
+	private TextField txtEspece;
+	
+	@FXML
+	private TextField txtLocaGeo;
+	
+	@FXML
+	private TextField txtPreciGeo;
+	
+	@FXML
+	private DatePicker dateDebut;
+	
+	@FXML
+	private DatePicker dateFin;
+	
+	@FXML
+	private Button btnValider;
+	
+	@FXML
+	private Button btnLecture;
+	
+	@FXML
+	private Button btnPause;
+	
+	@FXML
+	private Button btnStop;
+	
+	@FXML
+	private TreeView treeSignalement;
+	
+	@FXML
+	private ListView listEspece;
 	
     private static final float TEXTURE_LAT_OFFSET = -0.2f;
     private static final float TEXTURE_LON_OFFSET = 2.8f;
@@ -86,6 +126,9 @@ public class ControllerEarth implements Initializable {
         AmbientLight ambientLight = new AmbientLight(Color.WHITE);
         ambientLight.getScope().addAll(root3D);
         root3D.getChildren().add(ambientLight);
+        
+        //AutoComplete from controlsFX
+        //TextFields.bindAutoCompletion(txtEspece,);
         
         // Create scene
         // ...

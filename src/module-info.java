@@ -4,6 +4,7 @@ module Projet_IHM_Obis3d{
 	requires java.net.http;
 	requires jimObjModelImporterJFX;
 	requires org.json;
+	requires org.controlsfx.controls;
 	
 	opens application to javafx.graphics, javafx.fxml;
 }

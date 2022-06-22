@@ -15,6 +15,7 @@ public class Main extends Application {
 			Parent root = FXMLLoader.load(getClass().getResource("Gui3D.fxml"));
 			Scene scene = new Scene(root,900,640);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setTitle("OBIS 3D by Romain and Julian");
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
 			primaryStage.show();
