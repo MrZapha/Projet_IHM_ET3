@@ -19,13 +19,10 @@ public class Donne {
 		list=new ArrayList<Enregistrement>();
 	}
 	
-	public void add_Enregistrement(Enregistrement e) {
+	void add_Enregistrement(Enregistrement e) {
 		list.add(e);
 	}
 	
-	public ArrayList<Enregistrement> get_list() {
-		return list;
-	}
 	private void add_Enregistrement(JSONObject jsonRoot) {
 		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
 		int taille=resultatRecherche.length();
@@ -52,8 +49,19 @@ public class Donne {
 		return d;
 	}
 	
+	public static Donne donne_From_URL_With_Date(String nom,int nb_caractere,LocalDate date_debut,LocalDate date_fin) {
+		Donne d=new Donne();
+		JSONObject jsonRoot=Json.readJsonWithGeoHashAndTime(nom, nb_caractere, date_debut, date_fin);
+		d.add_Enregistrement(jsonRoot);
+		return d;
+	}
+	
+	public ArrayList<Enregistrement> get_list() {
+		return list;
+	}
+	
 	public static void main(String args[]) {
-		Donne d=donne_From_URL("Delphinidae",3);
+		Donne d=init();
 		//System.out.println(d.nb_signalement_region("Dolphin",20.0,30.0));
 		System.out.println(d.list);
 	}

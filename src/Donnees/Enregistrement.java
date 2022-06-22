@@ -1,25 +1,27 @@
 package Donnees;
 
+import java.util.ArrayList;
+
 import org.json.JSONArray;
+import javafx.geometry.Point2D;
 
 public class Enregistrement {
-	private double[] region;
+	private ArrayList<Point2D> region;
 	private String nom;
 	private int nb;
 	
 	public Enregistrement(JSONArray region,String nom, int nb) {
+		this.region=new ArrayList<Point2D>();
 		int taille=region.length();
-		this.region=new double[2*taille];
-		for (int i=0;i<taille;i+=2) {
-			this.region[i]=region.getJSONArray(i).getDouble(0);
-			this.region[i+1]=region.getJSONArray(i).getDouble(1);
+		for (int i=0;i<taille;i++) {
+			this.region.add(new Point2D(region.getJSONArray(i).getDouble(0),region.getJSONArray(i).getDouble(1)));
 		}
 		this.nom=nom;
 		this.nb=nb;
 	}
 	
 	
-	public double[] get_region() {
+	public ArrayList<Point2D> get_region() {
 		return region;
 	}
 	

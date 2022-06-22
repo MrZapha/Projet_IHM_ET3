@@ -12,6 +12,7 @@ import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpClient.Version;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
@@ -56,6 +57,12 @@ public class Json {
 		return readJsonFromUrl(s);
 	}
 	
+	public static JSONObject readJsonWithGeoHashAndTime(String nom,int nb_caractere,LocalDate date_debut,LocalDate date_fin) {
+		String s="https://api.obis.org/v3/occurrence/grid/"+nb_caractere+"?scientificname="+nom+"&startdate="+date_debut+"&enddate="+date_fin;
+		System.out.println(s);
+		return readJsonFromUrl(s);
+	}
+	
 	public static JSONObject init() {
 		try (Reader reader = new FileReader("Delphinidae.json")){
         	BufferedReader rd=new BufferedReader(reader);
@@ -69,7 +76,7 @@ public class Json {
 	}
 	
 	public static void main(String args[]) {
-		JSONObject jsonRoot= readJsonWithGeoHash("Delphinidae",4);
+		JSONObject jsonRoot= readJsonWithGeoHashAndTime("Delphinidae",4,LocalDate.of(2002, 10, 05),LocalDate.now());
 		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
 	   	JSONObject article = resultatRecherche.getJSONObject(0);
 	   	System.out.println(article);
