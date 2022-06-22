@@ -63,8 +63,20 @@ public class Json {
 		return readJsonFromUrl(s);
 	}
 	
-	public static JSONObject init() {
+	public static JSONObject init_delphinidae() {
 		try (Reader reader = new FileReader("Delphinidae.json")){
+        	BufferedReader rd=new BufferedReader(reader);
+        	String jsonText =readAll(rd);
+        	JSONObject jsonRoot = new JSONObject(jsonText);
+        	return jsonRoot;
+        }catch (IOException e) {
+        	e.printStackTrace();
+        	return null;
+        }
+	}
+	
+	public static JSONObject init_selachii() {
+		try (Reader reader = new FileReader("Selachii.json")){
         	BufferedReader rd=new BufferedReader(reader);
         	String jsonText =readAll(rd);
         	JSONObject jsonRoot = new JSONObject(jsonText);

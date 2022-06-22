@@ -23,38 +23,61 @@ public class Donne {
 		list.add(e);
 	}
 	
-	private void add_Enregistrement(JSONObject jsonRoot) {
+	private void add_Enregistrement(JSONObject jsonRoot,String nom) {
 		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
 		int taille=resultatRecherche.length();
 		for(int i=0;i<taille;i++) {
 			JSONObject article = resultatRecherche.getJSONObject(i);
 	   		int nb=article.getJSONObject("properties").getInt("n");
 	   		JSONObject geometry =article.getJSONObject("geometry");
-	   		Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),"Delphinidae",nb);
+	   		Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),nom,nb);
 	   		this.add_Enregistrement(e);
 		}
 	}
 	
 	public static Donne init() {
+		double nb;
+		nb = Math.random();
+		if (nb>=0.5) {
+			return init_selachii();
+		}
+		else {
+			return init_delphinidae();
+		}
+	}
+	
+	private static Donne init_delphinidae() {
 		Donne d=new Donne();
-		JSONObject jsonRoot=Json.init();
-		d.add_Enregistrement(jsonRoot);
+		JSONObject jsonRoot=Json.init_delphinidae();
+		d.add_Enregistrement(jsonRoot,"Delphinidae");
 		return d;
 	}
+	
+	private static Donne init_selachii() {
+		Donne d=new Donne();
+		JSONObject jsonRoot=Json.init_selachii();
+		d.add_Enregistrement(jsonRoot,"Selachii");
+		return d;
+	}
+	
 	
 	public static Donne donne_From_URL(String nom,int nb_caractere) {
 		Donne d=new Donne();
 		JSONObject jsonRoot=Json.readJsonWithGeoHash(nom, nb_caractere);
-		d.add_Enregistrement(jsonRoot);
+		d.add_Enregistrement(jsonRoot,nom);
 		return d;
 	}
 	
 	public static Donne donne_From_URL_With_Date(String nom,int nb_caractere,LocalDate date_debut,LocalDate date_fin) {
 		Donne d=new Donne();
 		JSONObject jsonRoot=Json.readJsonWithGeoHashAndTime(nom, nb_caractere, date_debut, date_fin);
-		d.add_Enregistrement(jsonRoot);
+		d.add_Enregistrement(jsonRoot,nom);
 		return d;
 	}
+	
+	/*public static Donne donne_From_URL_With_Time_Interval() {
+		
+	}*/
 	
 	public ArrayList<Enregistrement> get_list() {
 		return list;
