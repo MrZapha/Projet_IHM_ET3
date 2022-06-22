@@ -115,6 +115,7 @@ public class ControllerEarth implements Initializable {
         
         root3D.getChildren().add(earth);
         
+        //Drawing from file
         drawFromFile(root3D);
 
         // Add a camera group
