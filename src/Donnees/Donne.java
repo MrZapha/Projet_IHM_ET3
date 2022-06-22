@@ -44,24 +44,24 @@ public class Donne {
 		return nb_signalement_region(nom,GeoHashHelper.getGeohash(new Location("",longitude,latitude)));
 	}
 	
-	public static Donne initialize() {
+	public static Donne init() {
 		Donne d=new Donne();
-		JSONObject jsonRoot=Json.initialize();
+		JSONObject jsonRoot=Json.init();
 		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
 		int taille=resultatRecherche.length();
 		for(int i=0;i<taille;i++) {
 			JSONObject article = resultatRecherche.getJSONObject(i);
 	   		int nb=article.getJSONObject("properties").getInt("n");
 	   		JSONObject geometry =article.getJSONObject("geometry");
-	   		Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates"),"Delphinidae",LocalDate.now(),nb);
+	   		Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),"Delphinidae",LocalDate.now(),nb);
 	   		d.add_Enregistrement(e);
 		}
 		return d;
 	}
 	
 	public static void main(String args[]) {
-		Donne d=initialize();
+		Donne d=init();
 		//System.out.println(d.nb_signalement_region("Dolphin",20.0,30.0));
-		System.out.println(d.list);
+		//System.out.println(d.list);
 	}
 }

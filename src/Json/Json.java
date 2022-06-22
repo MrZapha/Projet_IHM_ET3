@@ -56,7 +56,7 @@ public class Json {
 		return readJsonFromUrl(s);
 	}
 	
-	public static JSONObject initialize() {
+	public static JSONObject init() {
 		try (Reader reader = new FileReader("Delphinidae.json")){
         	BufferedReader rd=new BufferedReader(reader);
         	String jsonText =readAll(rd);
@@ -75,7 +75,7 @@ public class Json {
 	   	System.out.println(article);
 	   	int nb=article.getJSONObject("properties").getInt("n");
 	   	JSONObject geometry =article.getJSONObject("geometry");
-	   	System.out.println(geometry.getJSONArray("coordinates"));
+	   	System.out.println(geometry.getJSONArray("coordinates").getJSONArray(0).getJSONArray(0).getDouble(0));
 	   	System.out.println(nb);
 	   	/*System.out.println(article.getString("snippet"));
 	   	System.out.println(article.getInt("wordcount"));
