@@ -50,7 +50,6 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.MeshView;
-import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Sphere;
 import javafx.scene.shape.TriangleMesh;
@@ -125,11 +124,10 @@ public class ControllerEarth implements Initializable {
         	tableauEchelle[i] = 1+i*(max-1)/8;
         }
         for(int i=0;i<registeredList.size();i++) {
-        	Polygon poly = new Polygon(registeredList.get(i).get_region());
-        	final PhongMaterial greenMaterial = new PhongMaterial();
-            greenMaterial.setDiffuseColor(Color.rgb(0,150,0,0));
-            greenMaterial.setSpecularColor(Color.GREEN);
-        	root3D.getChildren().add(poly);
+        	registeredList.get(i).get_region();
+        	for(int j=0;j<5;j++) {
+        		geoCoordTo3dCoord(float lat, float lon);
+        	}
         }
 
         // Add a camera group
