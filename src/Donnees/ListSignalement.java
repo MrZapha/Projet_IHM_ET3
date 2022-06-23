@@ -37,50 +37,56 @@ public class ListSignalement {
 	 * @param jsonRoot la requête qui contient les signalements
 	 */
 	private void add_Signalement(JSONObject jsonRoot) {
-		JSONArray resultatRecherche = jsonRoot.getJSONArray("results");
-		int taille=resultatRecherche.length();
-		for(int i=0;i<taille;i++) {
-			JSONObject article = resultatRecherche.getJSONObject(i);
-			String scientificName;
-			//Certains signalement ne comportant pas tous les champs on a été obligés de faire un try cathc pour ne pas avoir de problémes 
-			try(StringReader test_nomscientific=new StringReader(article.getString("scientificName"))) {
-				scientificName=article.getString("scientificName");
+		if(!jsonRoot.isNull("results")) {
+			JSONArray resultatRecherche = jsonRoot.getJSONArray("results");
+			int taille=resultatRecherche.length();
+			for(int i=0;i<taille;i++) {
+				JSONObject article = resultatRecherche.getJSONObject(i);
+				String scientificName;
+				//Certains signalement ne comportant pas tous les champs on a été obligés de faire un try cathc pour ne pas avoir de problémes 
+				try(StringReader test_nomscientific=new StringReader(article.getString("scientificName"))) {
+					scientificName=article.getString("scientificName");
+				}
+				catch(org.json.JSONException e) {
+					scientificName="N/A";
+				};
+				String order;
+				try(StringReader test_order=new StringReader(article.getString("order"))) {
+					order=article.getString("order");
+				}
+				catch(org.json.JSONException e) {
+					order="N/A";
+				};
+				String superclass;
+				try(StringReader test_superclass=new StringReader(article.getString("parvphylum"))) {
+					superclass=article.getString("parvphylum");
+				}
+				catch(org.json.JSONException e) {
+					superclass="N/A";
+				};
+				String recordedBy;
+				try(StringReader test_recordeBy=new StringReader(article.getString("scientificNameAuthorship"))) {
+					recordedBy=article.getString("scientificNameAuthorship");
+				}
+				catch(org.json.JSONException e) {
+					recordedBy="N/A";
+				};
+				String species;
+				try(StringReader test_species=new StringReader(article.getString("species"))) {
+					species=article.getString("species");
+				}
+				catch(org.json.JSONException e) {
+					species="N/A";
+				};
+				Signalement s=new Signalement(scientificName,order,superclass
+						,recordedBy,species);
+				this.add_Signalement(s);
+				
 			}
-			catch(org.json.JSONException e) {
-				scientificName="N/A";
-			};
-			String order;
-			try(StringReader test_order=new StringReader(article.getString("order"))) {
-				order=article.getString("order");
-			}
-			catch(org.json.JSONException e) {
-				order="N/A";
-			};
-			String superclass;
-			try(StringReader test_superclass=new StringReader(article.getString("parvphylum"))) {
-				superclass=article.getString("parvphylum");
-			}
-			catch(org.json.JSONException e) {
-				superclass="N/A";
-			};
-			String recordedBy;
-			try(StringReader test_recordeBy=new StringReader(article.getString("scientificNameAuthorship"))) {
-				recordedBy=article.getString("scientificNameAuthorship");
-			}
-			catch(org.json.JSONException e) {
-				recordedBy="N/A";
-			};
-			String species;
-			try(StringReader test_species=new StringReader(article.getString("species"))) {
-				species=article.getString("species");
-			}
-			catch(org.json.JSONException e) {
-				species="N/A";
-			};
-	   		Signalement s=new Signalement(scientificName,order,superclass
-	   				,recordedBy,species);
-	   		this.add_Signalement(s);
+			return;
+			
 		}
+		System.out.println("Aucune espèce trouvée");
 	}
 	
 	/**
