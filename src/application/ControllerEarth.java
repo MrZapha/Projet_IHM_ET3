@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 
 import com.interactivemesh.jfx.importer.ImportException;
@@ -13,7 +14,8 @@ import com.ludovic.vimont.Location;
 
 import Donnees.Donne;
 import Donnees.Enregistrement;
-import Json.Json;
+import Donnees.ListSignalement;
+import autoComplete.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -33,16 +35,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.PickResult;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.MeshView;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Sphere;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
@@ -54,6 +55,8 @@ public class ControllerEarth implements Initializable {
 	
 	@FXML
 	private TextField txtEspece;
+	
+	private static AutoCompletionBinding auto;
 	
 	@FXML
 	private TextField txtLocaGeo;
@@ -83,7 +86,7 @@ public class ControllerEarth implements Initializable {
 	private TreeView treeSignalement;
 	
 	@FXML
-	private ListView listEspece;
+	private ListView<String> listEspece;
 	
 	@FXML
 	private Label labelEspece;
@@ -112,6 +115,7 @@ public class ControllerEarth implements Initializable {
         
         //Drawing from file, either Delphinidae.json or Selachii.json with a 50/50% chance
         Donne d = Donne.init();
+        txtPreciGeo.setText("3");
         drawHistogram(root3D,txtEspece,d);
 
         // Add a camera group
@@ -139,12 +143,14 @@ public class ControllerEarth implements Initializable {
         pane3D.getChildren().addAll(subscene);
         
         //Auto complete
+        auto = TextFields.bindAutoCompletion(txtEspece, "");
         txtEspece.setOnKeyReleased(new EventHandler<KeyEvent>() {
         	@Override
         	public void handle(KeyEvent event) {
         		if(txtEspece.getLength()>3) {
         			ObservableList<String> items = FXCollections.observableArrayList(Donne.completeSpecies(txtEspece.getText()));
-        			TextFields.bindAutoCompletion(txtEspece, items);
+        			auto.dispose();
+        			AutoCompletionBinding auto = TextFields.bindAutoCompletion(txtEspece, items);	
         			labelEspece.setText("");
         		
         			if (items.size() == 0 && txtEspece.getLength() > 0 ) {
@@ -152,16 +158,30 @@ public class ControllerEarth implements Initializable {
         			}
         		}
         	}
-        	
-        	
-        	
         });
         
+        txtEspece.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent ke) {
+                if (ke.getCode().equals(KeyCode.ENTER) && labelEspece.getText().length()==0) {
+                	//Précision GeoHash par défaut, on n'empêche pas l'utilisateur d'agir
+                	if(txtPreciGeo.getText().length()==0) {
+                		txtPreciGeo.setText("3");
+                	}
+                	Donne d = Donne.donne_From_URL(txtEspece.getText(),Integer.valueOf(txtPreciGeo.getText()));
+                	for(int i =1;i<root3D.getChildren().size();i++) {
+                		root3D.getChildren().remove(i);
+                	}               	
+                	drawHistogram(root3D,txtEspece,d);
+                }
+            }
+        });
+        
+        //Clickable earth to get species
         subscene.addEventHandler(MouseEvent.ANY, event-> {
         	if(event.getEventType() == MouseEvent.MOUSE_PRESSED && event.getClickCount()==2) {
         		PickResult pickResult = event.getPickResult();
         		Point3D spaceCoord = pickResult.getIntersectedPoint();
-        		//System.out.print(spaceCoord+"\n");
         		
         		Point2D latLon = SpaceCoordToGeoCoord(spaceCoord);
         		double latCursor = latLon.getX();
@@ -169,16 +189,15 @@ public class ControllerEarth implements Initializable {
         		Location loc = new Location("selectedGeoHash",latCursor,lonCursor);
         		System.out.print(GeoHashHelper.getGeohash(loc)+"\n");
         		
-                Sphere sphere = new Sphere(0.05);
-                final PhongMaterial blackMaterial = new PhongMaterial();
-                blackMaterial.setDiffuseColor(Color.BLACK);
-                blackMaterial.setSpecularColor(Color.BLACK);
-                sphere.setMaterial(blackMaterial);
-                            	
-                sphere.setTranslateX(spaceCoord.getX());
-                sphere.setTranslateY(spaceCoord.getY());
-                sphere.setTranslateZ(spaceCoord.getZ());
-                root3D.getChildren().add(sphere);
+                //TODO Mettre espèces du GeoHash dans la listView et dans le TreeView
+        		String txt = GeoHashHelper.getGeohash(loc);
+        		txtLocaGeo.setText(txt.substring(0, 3));
+        		
+        		ListSignalement signalements = ListSignalement.set_Liste_Espece(txtLocaGeo.getText());
+        		ArrayList<String> listSignal = signalements.get_Liste_Espece();
+        		ObservableList<String> itemsListView = FXCollections.observableArrayList(listSignal);
+        		listEspece.setItems(itemsListView);
+        		
         	}
         });
         
@@ -190,7 +209,9 @@ public class ControllerEarth implements Initializable {
 		//Draw from Json Delphinidae file
         ArrayList<Enregistrement> registeredList = d.get_list();
         String nom = registeredList.get(0).get_nom();
-        txtEspece.setText(nom);
+        if(txtEspece.getLength()==0) {
+        	txtEspece.setText(nom);
+        }
         
         final PhongMaterial material1 = new PhongMaterial();
         material1.setDiffuseColor(Color.rgb(255,255,204,0.8));
