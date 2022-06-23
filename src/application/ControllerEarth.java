@@ -14,7 +14,6 @@ import com.ludovic.vimont.Location;
 
 import Donnees.Donne;
 import application.Model;
-import Donnees.Enregistrement;
 import Donnees.ListSignalement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -43,13 +42,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.PickResult;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.MeshView;
-import javafx.scene.shape.Sphere;
-import javafx.scene.shape.TriangleMesh;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Translate;
 
 public class ControllerEarth implements Initializable {
 	@FXML
@@ -139,7 +132,7 @@ public class ControllerEarth implements Initializable {
         subscene.setCamera(camera);
         subscene.setFill(Color.GREY);
         pane3D.getChildren().addAll(subscene);
-        
+        /*
         //Auto complete
         auto = TextFields.bindAutoCompletion(txtEspece, "");
         txtEspece.setOnKeyReleased(new EventHandler<KeyEvent>() {
@@ -157,7 +150,7 @@ public class ControllerEarth implements Initializable {
         		}
         	}
         });
-        
+        */
         listEspece.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    @Override
 		    public void handle(MouseEvent mouseEvent) {
@@ -218,7 +211,7 @@ public class ControllerEarth implements Initializable {
         		treeSignalement.setShowRoot(false);
         		
         		for(int i=0;i<signalements.get_List_Signalement().size();i++) {
-        			TreeItem<String> name = new TreeItem<String>("scientificName ");
+        			TreeItem<String> name = new TreeItem<String>("scientificName "+signalements.get_List_Signalement());
         			TreeItem<String> order = new TreeItem<String>("order ");
         			TreeItem<String> superclass = new TreeItem<String>("superclass ");
         			TreeItem<String> recordedBy = new TreeItem<String>("recordedBy ");
