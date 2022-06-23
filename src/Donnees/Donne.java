@@ -3,10 +3,8 @@ package Donnees;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.function.Consumer;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import com.ludovic.vimont.GeoHashHelper;
 import com.ludovic.vimont.Location;
 
@@ -31,6 +29,18 @@ public class Donne {
 	   		int nb=article.getJSONObject("properties").getInt("n");
 	   		JSONObject geometry =article.getJSONObject("geometry");
 	   		Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),nom,nb);
+	   		this.add_Enregistrement(e);
+		}
+	}
+	
+	private void add_Enregistrement(JSONObject jsonRoot,String nom,LocalDate date_debut,LocalDate date_fin) {
+		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
+		int taille=resultatRecherche.length();
+		for(int i=0;i<taille;i++) {
+			JSONObject article = resultatRecherche.getJSONObject(i);
+	   		int nb=article.getJSONObject("properties").getInt("n");
+	   		JSONObject geometry =article.getJSONObject("geometry");
+	   		Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),nom,nb,date_debut,date_fin);
 	   		this.add_Enregistrement(e);
 		}
 	}
@@ -72,13 +82,32 @@ public class Donne {
 	public static Donne donne_From_URL_With_Date(String nom,int nb_caractere,LocalDate date_debut,LocalDate date_fin) {
 		Donne d=new Donne();
 		JSONObject jsonRoot=Json.readJsonWithGeoHashAndTime(nom, nb_caractere, date_debut, date_fin);
-		d.add_Enregistrement(jsonRoot,nom);
+		d.add_Enregistrement(jsonRoot,nom,date_debut,date_fin);
 		return d;
 	}
 	
-	/*public static Donne donne_From_URL_With_Time_Interval(String nom,int nb_caractere,LocalDate date_debut,,int nb_intervalle) {
-		
-	}*/
+	public static Donne donne_From_URL_With_Time_Interval(String nom,int nb_caractere,LocalDate date_debut,long intervalleAnnee,int nb_intervalle) {
+		Donne d=new Donne();
+		for(int i=1;i<=nb_intervalle;i++) {
+			LocalDate date_fin=date_debut.plusYears(intervalleAnnee);
+			JSONObject jsonRoot=Json.readJsonWithGeoHashAndTime(nom, nb_caractere, date_debut, date_fin);
+			d.add_Enregistrement(jsonRoot,nom,date_debut,date_fin);
+			date_debut=date_debut.plusYears(intervalleAnnee);
+		}
+		return d;
+	}
+	
+	public Donne get_donne_with_this_intervalle(LocalDate date_debut,LocalDate date_fin) {
+		Donne d=new Donne();
+		for(Enregistrement e: list) {
+			LocalDate d_deb=e.get_date_debut();
+			LocalDate d_fin=e.get_date_fin();
+			if((d_deb.isAfter(date_debut) || d_deb.isEqual(date_debut)) && (d_fin.isBefore(date_fin) || d_fin.isEqual(date_fin)) ) {
+				d.add_Enregistrement(e);
+			}
+		}
+		return d;
+	}
 	
 	public static ArrayList<String> completeSpecies(String texte){
 		JSONArray jsonRoot=Json.completeSpecies(texte);
@@ -94,6 +123,7 @@ public class Donne {
 	public ArrayList<Enregistrement> get_list() {
 		return list;
 	}
+	
 	
 	public static void main(String args[]) {
 		Donne d=init();

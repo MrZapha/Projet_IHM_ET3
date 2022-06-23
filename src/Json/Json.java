@@ -76,13 +76,18 @@ public class Json {
 		return new JSONArray(json);
 	}
 	
+	private static String testnom(String nom) {
+		String s=nom.replace(" ", "%20");
+		return s;
+	}
+	
 	public static JSONObject readJsonWithGeoHash(String nom,int nb_caractere) {
-		String s="https://api.obis.org/v3/occurrence/grid/"+nb_caractere+"?scientificname="+nom;
+		String s="https://api.obis.org/v3/occurrence/grid/"+nb_caractere+"?scientificname="+testnom(nom);
 		return readJsonFromUrl(s);
 	}
 	
 	public static JSONObject readJsonWithGeoHashAndTime(String nom,int nb_caractere,LocalDate date_debut,LocalDate date_fin) {
-		String s="https://api.obis.org/v3/occurrence/grid/"+nb_caractere+"?scientificname="+nom+"&startdate="+date_debut+"&enddate="+date_fin;
+		String s="https://api.obis.org/v3/occurrence/grid/"+nb_caractere+"?scientificname="+testnom(nom)+"&startdate="+date_debut+"&enddate="+date_fin;
 		return readJsonFromUrl(s);
 	}
 	
@@ -110,6 +115,14 @@ public class Json {
         }
 	}
 	
+	public static JSONObject details_Enregistrement_GeoHash(String nom,String GeoHash) {
+		String s="https://api.obis.org/v3/occurrence?";
+		if(!nom.equals("")) {
+			s+=testnom(nom)+"&";
+		}
+		s+="geometry="+GeoHash;
+		return readJsonFromUrl(s);
+	}
 	
 	public static JSONArray completeSpecies(String texte) {
 		String s="https://api.obis.org/v3/taxon/complete/verbose/"+texte;
@@ -117,7 +130,7 @@ public class Json {
 	}
 	
 	public static void main(String args[]) {
-		JSONObject jsonRoot= readJsonWithGeoHashAndTime("Delphinidae",4,LocalDate.of(2002, 10, 05),LocalDate.now());
+		JSONObject jsonRoot= readJsonWithGeoHashAndTime("Manta birostris",4,LocalDate.of(2002, 10, 05),LocalDate.now());
 		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
 	   	JSONObject article = resultatRecherche.getJSONObject(0);
 	   	System.out.println(article);

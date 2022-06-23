@@ -1,7 +1,7 @@
 package Donnees;
 
 import java.util.ArrayList;
-
+import java.time.LocalDate;
 import org.json.JSONArray;
 import javafx.geometry.Point2D;
 
@@ -9,8 +9,10 @@ public class Enregistrement {
 	private ArrayList<Point2D> region;
 	private String nom;
 	private int nb;
+	private LocalDate date_debut;
+	private LocalDate date_fin;
 	
-	public Enregistrement(JSONArray region,String nom, int nb) {
+	public Enregistrement(JSONArray region,String nom, int nb,LocalDate date_debut,LocalDate date_fin) {
 		this.region=new ArrayList<Point2D>();
 		int taille=region.length();
 		for (int i=0;i<taille;i++) {
@@ -18,8 +20,13 @@ public class Enregistrement {
 		}
 		this.nom=nom;
 		this.nb=nb;
+		this.date_debut=date_debut;
+		this.date_fin=date_fin;
 	}
 	
+	public Enregistrement(JSONArray region,String nom, int nb) {
+		this(region,nom,nb,LocalDate.now(),LocalDate.now());
+	}
 	
 	public ArrayList<Point2D> get_region() {
 		return region;
@@ -31,6 +38,14 @@ public class Enregistrement {
 	
 	public int get_nombre() {
 		return nb;
+	}
+	
+	public LocalDate get_date_debut() {
+		return date_debut;
+	}
+	
+	public LocalDate get_date_fin() {
+		return date_fin;
 	}
 	
 	@Override
