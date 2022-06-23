@@ -1,5 +1,6 @@
 package Donnees;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,13 +17,49 @@ public class ListSignalement {
 		list.add(s);
 	}
 	
+	
 	private void add_Signalement(JSONObject jsonRoot) {
 		JSONArray resultatRecherche = jsonRoot.getJSONArray("results");
 		int taille=resultatRecherche.length();
 		for(int i=0;i<taille;i++) {
 			JSONObject article = resultatRecherche.getJSONObject(i);
-	   		Signalement s=new Signalement(article.getString("scientificName"),article.getString("order"),
-	   				article.getString("parvphylum"),article.getString("scientificNameAuthorship"),article.getString("species"));
+			String scientificName;
+			try(StringReader test_nomscientific=new StringReader(article.getString("scientificName"))) {
+				scientificName=article.getString("scientificName");
+			}
+			catch(org.json.JSONException e) {
+				scientificName="Cette espèce n'as pas de nom scientifique";
+			};
+			String order;
+			try(StringReader test_order=new StringReader(article.getString("order"))) {
+				order=article.getString("order");
+			}
+			catch(org.json.JSONException e) {
+				order="Cette espèce n'as pas d'ordre";
+			};
+			String superclass;
+			try(StringReader test_superclass=new StringReader(article.getString("parvphylum"))) {
+				superclass=article.getString("parvphylum");
+			}
+			catch(org.json.JSONException e) {
+				superclass="Cette espèce n'as pas de super class";
+			};
+			String recordedBy;
+			try(StringReader test_recordeBy=new StringReader(article.getString("scientificNameAuthorship"))) {
+				recordedBy=article.getString("scientificNameAuthorship");
+			}
+			catch(org.json.JSONException e) {
+				recordedBy="Ce signalement n'as pas d'auteur";
+			};
+			String species;
+			try(StringReader test_species=new StringReader(article.getString("species"))) {
+				species=article.getString("species");
+			}
+			catch(org.json.JSONException e) {
+				species="Cette espèce n'as pas de nom d'espèce";
+			};
+	   		Signalement s=new Signalement(scientificName,order,superclass
+	   				,recordedBy,species);
 	   		this.add_Signalement(s);
 		}
 	}
