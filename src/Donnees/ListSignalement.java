@@ -44,4 +44,12 @@ public class ListSignalement {
 		}
 		return ls;
 	}
+	
+	public static ListSignalement set_Liste_information_Espece(String nom,String GeoHash) {
+		ListSignalement l=new ListSignalement();
+		JSONObject jsonRoot=Json.details_Enregistrement_GeoHash(nom, GeoHash);
+		l.add_Signalement(jsonRoot);
+		return l;
+	}
+	
 }

@@ -18,6 +18,11 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * La classe qui gére toute les requêtes Json faite a l'API
+ * @author Julian Coynel
+ *
+ */
 public class Json {
 	private static String readAll(Reader rd) throws IOException{
     	StringBuilder sb=new StringBuilder();
