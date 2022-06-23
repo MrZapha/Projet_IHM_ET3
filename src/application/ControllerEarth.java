@@ -15,7 +15,6 @@ import com.ludovic.vimont.Location;
 import Donnees.Donne;
 import Donnees.Enregistrement;
 import Donnees.ListSignalement;
-import autoComplete.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
