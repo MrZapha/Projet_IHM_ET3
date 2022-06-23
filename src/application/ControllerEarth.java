@@ -1,22 +1,8 @@
 package application;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpClient.Redirect;
-import java.net.http.HttpClient.Version;
-import java.net.http.HttpResponse.BodyHandlers;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.StringTokenizer;
-import java.util.concurrent.TimeUnit;
 
 import org.controlsfx.control.textfield.TextFields;
 
@@ -27,6 +13,10 @@ import com.ludovic.vimont.Location;
 
 import Donnees.Donne;
 import Donnees.Enregistrement;
+import Json.Json;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -42,6 +32,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.PickResult;
 import javafx.scene.layout.Pane;
@@ -115,8 +106,9 @@ public class ControllerEarth implements Initializable {
         
         root3D.getChildren().add(earth);
         
-        //Drawing from file
-        drawFromFile(root3D);
+        //Drawing from file, either Delphinidae.json or Selachii.json with a 50/50% chance
+        Donne d = Donne.init();
+        drawHistogram(root3D,txtEspece,d);
 
         // Add a camera group
         PerspectiveCamera camera = new PerspectiveCamera(true);
@@ -135,15 +127,28 @@ public class ControllerEarth implements Initializable {
         ambientLight.getScope().addAll(root3D);
         root3D.getChildren().add(ambientLight);
         
-        //AutoComplete from controlsFX
-        //TextFields.bindAutoCompletion(txtEspece,);
-        
         // Create scene
         // ...
         SubScene subscene = new SubScene(root3D,500,580,true,SceneAntialiasing.BALANCED);
         subscene.setCamera(camera);
         subscene.setFill(Color.GREY);
         pane3D.getChildren().addAll(subscene);
+        
+        //Auto complete
+        txtEspece.setOnKeyReleased(new EventHandler<KeyEvent>() {
+        	@Override
+        	public void handle(KeyEvent event) {
+        		ObservableList<String> items = FXCollections.observableArrayList(Json.completeSpecies(txtEspece.getText()));
+        		TextFields.bindAutoCompletion(txtEspece, items);
+        		
+        		if (items.size() == 0 && txtEspece.getLength() > 0 ) {
+        			System.out.println("Erreur pas de résultats, à gérer");
+        		}
+        	}
+        	
+        	
+        	
+        });
         
         subscene.addEventHandler(MouseEvent.ANY, event-> {
         	if(event.getEventType() == MouseEvent.MOUSE_PRESSED && event.getClickCount()==2) {
@@ -174,27 +179,83 @@ public class ControllerEarth implements Initializable {
         
 	}
 	
-	public static void drawFromFile(Group root3D) {
+	public static void drawHistogram(Group root3D,TextField txtEspece,Donne d) {
 		//Draw from Json Delphinidae file
-        Donne d = Donne.init();
         ArrayList<Enregistrement> registeredList = d.get_list();
+        String nom = registeredList.get(0).get_nom();
+        txtEspece.setText(nom);
+        
+        final PhongMaterial material1 = new PhongMaterial();
+        material1.setDiffuseColor(Color.rgb(255,255,204,0.8));
+        
+        final PhongMaterial material2= new PhongMaterial();
+        material2.setDiffuseColor(Color.rgb(255,237,160,0.8));
+        
+        final PhongMaterial material3 = new PhongMaterial();
+        material3.setDiffuseColor(Color.rgb(254,217,118,0.8));
+        
+        final PhongMaterial material4 = new PhongMaterial();
+        material4.setDiffuseColor(Color.rgb(254,178,76,0.8));
+        
+        final PhongMaterial material5 = new PhongMaterial();
+        material5.setDiffuseColor(Color.rgb(253,141,60,0.8));
+      
+        final PhongMaterial material6 = new PhongMaterial();
+        material6.setDiffuseColor(Color.rgb(252,78,42,0.8));
+        
+        final PhongMaterial material7 = new PhongMaterial();
+        material7.setDiffuseColor(Color.rgb(227,26,28,0.8));
+        
+        final PhongMaterial material8 = new PhongMaterial();
+        material8.setDiffuseColor(Color.rgb(177,0,38,0.8));
+        
         int max = registeredList.get(0).get_nombre();
         int[] tableauEchelle = new int[8];
         for(int i=0;i<8;i++) {
-        	tableauEchelle[i] = i*max/8;
+        	tableauEchelle[i] = (i+1)*max/8;
+        	System.out.println(tableauEchelle[i]);
         }
         for(int i=0;i<registeredList.size();i++) {
         	ArrayList<Point2D> region = registeredList.get(i).get_region();
-        	for(int j=0;j<5;j++) {
-        		Point3D spaceCoord = geoCoordTo3dCoord((float)region.get(j).getX(), (float)region.get(j).getY());
-        		Cylinder cyl = createLine(spaceCoord, spaceCoord.multiply(1.10));
-        		final PhongMaterial greenMaterial = new PhongMaterial();
-                greenMaterial.setDiffuseColor(Color.rgb(0,150,0,0));
-                greenMaterial.setSpecularColor(Color.GREEN);
-                cyl.setMaterial(greenMaterial);
-        		
+        	
+        	Point3D spaceCoord0 = geoCoordTo3dCoord((float)region.get(0).getY(), (float)region.get(0).getX());
+        	Point3D spaceCoord2 = geoCoordTo3dCoord((float)region.get(2).getY(), (float)region.get(2).getX());
+        	Point3D milieu = spaceCoord0.midpoint(spaceCoord2);
+        	
+        	if(registeredList.get(i).get_nombre()<=tableauEchelle[0]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.03));
+                cyl.setMaterial(material1);
                 root3D.getChildren().add(cyl);
-        	}
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[1]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.06));
+                cyl.setMaterial(material2);
+                root3D.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[2]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.09));
+                cyl.setMaterial(material3);
+                root3D.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[3]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.12));
+                cyl.setMaterial(material4);
+                root3D.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[4]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.15));
+                cyl.setMaterial(material5);
+                root3D.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[5]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.18));
+                cyl.setMaterial(material6);
+                root3D.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[6]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.21));
+                cyl.setMaterial(material7);
+                root3D.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[7]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.24));
+                cyl.setMaterial(material8);
+                root3D.getChildren().add(cyl);
+        	}	
+            
         }
 	}
 	
