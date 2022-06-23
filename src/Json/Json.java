@@ -119,18 +119,22 @@ public class Json {
 	}
 	
 	/**
-	 * La fonction qui fait une requête a l'API en fonction du nom de l'espéce, de la précision géohash et un inter
-	 * @param nom
-	 * @param nb_caractere
-	 * @param date_debut
-	 * @param date_fin
-	 * @return
+	 * La fonction qui fait une requête a l'API en fonction du nom de l'espéce, de la précision géohash et un intervalle de temps
+	 * @param nom le nom de l'espece
+	 * @param nb_caractere la précision geohash
+	 * @param date_debut la date du début de l'intervalle de temps
+	 * @param date_fin la date de la fin de l'intervalle de temps
+	 * @return un JSONObject qui correspond au resultat de la requête
 	 */
 	public static JSONObject readJsonWithGeoHashAndTime(String nom,int nb_caractere,LocalDate date_debut,LocalDate date_fin) {
 		String s="https://api.obis.org/v3/occurrence/grid/"+nb_caractere+"?scientificname="+testnom(nom)+"&startdate="+date_debut+"&enddate="+date_fin;
 		return readJsonFromUrl(s);
 	}
 	
+	/**
+	 * La fonction pour initialiser l'application avec le fichier Delphinidae.json
+	 * @return un JSONObject qui correspond au fichier
+	 */
 	public static JSONObject init_delphinidae() {
 		try (Reader reader = new FileReader("Delphinidae.json")){
         	BufferedReader rd=new BufferedReader(reader);
@@ -143,6 +147,10 @@ public class Json {
         }
 	}
 	
+	/**
+	 * La fonction pour initialiser l'application avec le fichier Selachii.json
+	 * @return un JSONObject qui correspond au fichier
+	 */
 	public static JSONObject init_selachii() {
 		try (Reader reader = new FileReader("Selachii.json")){
         	BufferedReader rd=new BufferedReader(reader);
@@ -155,12 +163,23 @@ public class Json {
         }
 	}
 	
+	/**
+	 * La fonction qui permet de récuperer les informations sur les especes présentes dans un GeoHash
+	 * @param GeoHash le GeoHash demander
+	 * @return un JSONObject qui correspond au resultat de la requête
+	 */
 	public static JSONObject liste_Espece_GeoHash(String GeoHash) {
 		String s="https://api.obis.org/v3/occurrence?";
 		s+="geometry="+GeoHash;
 		return readJsonFromUrl(s);
 	}
 	
+	/**
+	 * La fonction qui permet de récuperer les informations sur l'espece données en paramétres présentes dans un GeoHash
+	 * @param nom le nom de l'espéces
+	 * @param GeoHash le GeoHash demander
+	 * @return un JSONObject qui correspond au resultat de la requête
+	 */
 	public static JSONObject details_Enregistrement_GeoHash(String nom,String GeoHash) {
 		String s="https://api.obis.org/v3/occurrence?";
 		s+=testnom(nom)+"&";
@@ -168,25 +187,14 @@ public class Json {
 		return readJsonFromUrl(s);
 	}
 	
+	/**
+	 * La fonction qui permet de faire l'autocompletion
+	 * @param texte le texte pour faire l'autocompletion
+	 * @return un JSONArray qui correspond au resultat de la requête
+	 */
 	public static JSONArray completeSpecies(String texte) {
 		String s="https://api.obis.org/v3/taxon/complete/verbose/"+texte;
 		return readJsonFromUrlArray(s);
 	}
 	
-	public static void main(String args[]) {
-		JSONObject jsonRoot= readJsonWithGeoHashAndTime("Manta birostris",4,LocalDate.of(2002, 10, 05),LocalDate.now());
-		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
-	   	JSONObject article = resultatRecherche.getJSONObject(0);
-	   	System.out.println(article);
-	   	int nb=article.getJSONObject("properties").getInt("n");
-	   	JSONObject geometry =article.getJSONObject("geometry");
-	   	System.out.println(geometry.getJSONArray("coordinates").getJSONArray(0).getJSONArray(0).getDouble(0));
-	   	System.out.println(nb);
-	   	/*System.out.println(article.getString("snippet"));
-	   	System.out.println(article.getInt("wordcount"));
-	   	article = resultatRecherche.getJSONObject(1);
-	   	System.out.println(article.getString("title"));
-	   	System.out.println(article.getString("snippet"));*/
-
-	}
 }
