@@ -98,8 +98,8 @@ public class Json {
 	}
 	
 	/**
-	 * Une fonction qui permet de tester si le nom de l'espéce contient un espace et si c'est le cas change l'espace par %20
-	 * @param nom le nom de l'espéce
+	 * Une fonction qui permet de tester si le nom de l'espèce contient un espace et si c'est le cas change l'espace par %20
+	 * @param nom le nom de l'espèce
 	 * @return le nom de l'espéce modifié si besoin
 	 */
 	private static String testnom(String nom) {
@@ -108,8 +108,8 @@ public class Json {
 	}
 	
 	/**
-	 * La fonction qui fait une requête a l'API en fonction du nom de l'espéce et de la précision géohash
-	 * @param nom le nom de l'espece
+	 * La fonction qui fait une requête a l'API en fonction du nom de l'espèce et de la précision géohash
+	 * @param nom le nom de l'espèce
 	 * @param nb_caractere la précision geohash
 	 * @return un JSONObject qui correspond au resultat de la requête
 	 */
@@ -119,8 +119,8 @@ public class Json {
 	}
 	
 	/**
-	 * La fonction qui fait une requête a l'API en fonction du nom de l'espéce, de la précision géohash et un intervalle de temps
-	 * @param nom le nom de l'espece
+	 * La fonction qui fait une requête a l'API en fonction du nom de l'espèce, de la précision géohash et un intervalle de temps
+	 * @param nom le nom de l'espèce
 	 * @param nb_caractere la précision geohash
 	 * @param date_debut la date du début de l'intervalle de temps
 	 * @param date_fin la date de la fin de l'intervalle de temps
@@ -164,7 +164,7 @@ public class Json {
 	}
 	
 	/**
-	 * La fonction qui permet de récuperer les informations sur les especes présentes dans un GeoHash
+	 * La fonction qui permet de récuperer les informations sur les espèces présentes dans un GeoHash
 	 * @param GeoHash le GeoHash demander
 	 * @return un JSONObject qui correspond au resultat de la requête
 	 */
@@ -176,7 +176,7 @@ public class Json {
 	
 	/**
 	 * La fonction qui permet de récuperer les informations sur l'espece données en paramétres présentes dans un GeoHash
-	 * @param nom le nom de l'espéces
+	 * @param nom le nom de l'espèce
 	 * @param GeoHash le GeoHash demander
 	 * @return un JSONObject qui correspond au resultat de la requête
 	 */

@@ -22,7 +22,7 @@ public class ListSignalement {
 		for(int i=0;i<taille;i++) {
 			JSONObject article = resultatRecherche.getJSONObject(i);
 	   		Signalement s=new Signalement(article.getString("scientificName"),article.getString("order"),
-	   				article.getString("family"),article.getString("recordedBy"),article.getString("species"));
+	   				article.getString("parvphylum"),article.getString("scientificNameAuthorship"),article.getString("species"));
 	   		this.add_Signalement(s);
 		}
 	}
