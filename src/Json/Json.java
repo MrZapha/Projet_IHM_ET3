@@ -24,6 +24,12 @@ import org.json.JSONObject;
  *
  */
 public class Json {
+	/**
+	 * La fonction permettant de lire depuis un fichier .Json
+	 * @param rd un Reader 
+	 * @return un String au format Json
+	 * @throws IOException
+	 */
 	private static String readAll(Reader rd) throws IOException{
     	StringBuilder sb=new StringBuilder();
     	int cp;
@@ -33,6 +39,11 @@ public class Json {
     	return sb.toString();
     }
 	
+	/**
+	 * La fonction permettant de lire depuis une url
+	 * @param url l'url ou on veut récuperer le Json
+	 * @return un JSONObject qui correspond au resultat de la requête
+	 */
 	static JSONObject readJsonFromUrl(String url) {
 		String json="";
 		HttpClient client = HttpClient.newBuilder()
@@ -57,6 +68,11 @@ public class Json {
 		return new JSONObject(json);
 	}
 	
+	/**
+	 * La fonction permettant de lire depuis une url
+	 * @param url l'url ou on veut récuperer le Json
+	 * @return un JSONArray qui correspond au resultat de la requête
+	 */
 	static JSONArray readJsonFromUrlArray(String url) {
 		String json="";
 		HttpClient client = HttpClient.newBuilder()
@@ -81,16 +97,35 @@ public class Json {
 		return new JSONArray(json);
 	}
 	
+	/**
+	 * Une fonction qui permet de tester si le nom de l'espéce contient un espace et si c'est le cas change l'espace par %20
+	 * @param nom le nom de l'espéce
+	 * @return le nom de l'espéce modifié si besoin
+	 */
 	private static String testnom(String nom) {
 		String s=nom.replace(" ", "%20");
 		return s;
 	}
 	
+	/**
+	 * La fonction qui fait une requête a l'API en fonction du nom de l'espéce et de la précision géohash
+	 * @param nom le nom de l'espece
+	 * @param nb_caractere la précision geohash
+	 * @return un JSONObject qui correspond au resultat de la requête
+	 */
 	public static JSONObject readJsonWithGeoHash(String nom,int nb_caractere) {
 		String s="https://api.obis.org/v3/occurrence/grid/"+nb_caractere+"?scientificname="+testnom(nom);
 		return readJsonFromUrl(s);
 	}
 	
+	/**
+	 * La fonction qui fait une requête a l'API en fonction du nom de l'espéce, de la précision géohash et un inter
+	 * @param nom
+	 * @param nb_caractere
+	 * @param date_debut
+	 * @param date_fin
+	 * @return
+	 */
 	public static JSONObject readJsonWithGeoHashAndTime(String nom,int nb_caractere,LocalDate date_debut,LocalDate date_fin) {
 		String s="https://api.obis.org/v3/occurrence/grid/"+nb_caractere+"?scientificname="+testnom(nom)+"&startdate="+date_debut+"&enddate="+date_fin;
 		return readJsonFromUrl(s);

@@ -1,10 +1,8 @@
 package Donnees;
 
 import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import Json.Json;
 
 public class ListSignalement {
@@ -50,6 +48,10 @@ public class ListSignalement {
 		JSONObject jsonRoot=Json.details_Enregistrement_GeoHash(nom, GeoHash);
 		l.add_Signalement(jsonRoot);
 		return l;
+	}
+	
+	public ArrayList<Signalement> get_List_Signalement(){
+		return list;
 	}
 	
 }
