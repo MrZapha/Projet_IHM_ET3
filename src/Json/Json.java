@@ -193,7 +193,7 @@ public class Json {
 	 * @return un JSONArray qui correspond au resultat de la requête
 	 */
 	public static JSONArray completeSpecies(String texte) {
-		String s="https://api.obis.org/v3/taxon/complete/verbose/"+texte;
+		String s="https://api.obis.org/v3/taxon/complete/verbose/"+testnom(texte);
 		return readJsonFromUrlArray(s);
 	}
 	
