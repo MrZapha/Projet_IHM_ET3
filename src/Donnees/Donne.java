@@ -1,5 +1,6 @@
 package Donnees;
 
+import java.io.StringReader;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -7,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import com.ludovic.vimont.GeoHashHelper;
 import com.ludovic.vimont.Location;
+
 
 import Json.Json;
 
@@ -61,15 +63,19 @@ public class Donne {
 	 * @param date_fin la date de fin de l'Enregistrement
 	 */
 	private void add_Enregistrement(JSONObject jsonRoot,String nom,LocalDate date_debut,LocalDate date_fin) {
-		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
-		int taille=resultatRecherche.length();
-		for(int i=0;i<taille;i++) {
-			JSONObject article = resultatRecherche.getJSONObject(i);
-	   		int nb=article.getJSONObject("properties").getInt("n");
-	   		JSONObject geometry =article.getJSONObject("geometry");
-	   		Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),nom,nb,date_debut,date_fin);
-	   		this.add_Enregistrement(e);
+		if(!jsonRoot.isNull("features")) {
+			JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
+			int taille=resultatRecherche.length();
+			for(int i=0;i<taille;i++) {
+				JSONObject article = resultatRecherche.getJSONObject(i);
+				int nb=article.getJSONObject("properties").getInt("n");
+				JSONObject geometry =article.getJSONObject("geometry");
+				Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),nom,nb,date_debut,date_fin);
+				this.add_Enregistrement(e);
+			}
+			return;
 		}
+		System.out.println("Aucune espèce trouvée");
 	}
 	
 	/**
