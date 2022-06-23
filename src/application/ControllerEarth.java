@@ -133,16 +133,16 @@ public class ControllerEarth implements Initializable {
         subscene.setCamera(camera);
         subscene.setFill(Color.GREY);
         pane3D.getChildren().addAll(subscene);
-        /*
+        
         //Auto complete
-        auto = TextFields.bindAutoCompletion(txtEspece, "");
+        //auto = TextFields.bindAutoCompletion(txtEspece, "");
         txtEspece.setOnKeyReleased(new EventHandler<KeyEvent>() {
         	@Override
         	public void handle(KeyEvent event) {
         		if(txtEspece.getLength()>3) {
         			ObservableList<String> items = FXCollections.observableArrayList(Donne.completeSpecies(txtEspece.getText()));
-        			auto.dispose();
-        			auto = TextFields.bindAutoCompletion(txtEspece, items);	
+        			//auto.dispose();
+        			//auto = TextFields.bindAutoCompletion(txtEspece, items);	
         			labelEspece.setText("");
         		
         			if (items.size() == 0 && txtEspece.getLength() > 0 ) {
@@ -151,7 +151,7 @@ public class ControllerEarth implements Initializable {
         		}
         	}
         });
-        */
+        
         listEspece.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    @Override
 		    public void handle(MouseEvent mouseEvent) {
@@ -167,7 +167,7 @@ public class ControllerEarth implements Initializable {
         btnValider.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent ae) {
-            	auto.dispose();
+            	//auto.dispose();
             	//On veut que l'espèce existe donc label d'alerte vide
                 if (labelEspece.getText().length()==0) {
                 	//Précision GeoHash par défaut, on n'empêche pas l'utilisateur d'agir
@@ -191,7 +191,6 @@ public class ControllerEarth implements Initializable {
         		double latCursor = latLon.getX();
         		double lonCursor = latLon.getY();
         		Location loc = new Location("selectedGeoHash",latCursor,lonCursor);
-        		System.out.print(GeoHashHelper.getGeohash(loc)+"\n");
         		
                 //TODO Mettre espèces du GeoHash dans la listView et dans le TreeView
         		if(txtPreciGeo.getText().length()==0) {
@@ -213,12 +212,13 @@ public class ControllerEarth implements Initializable {
         		treeSignalement.setRoot(root);
         		treeSignalement.setShowRoot(false);
         		
-        		for(int i=0;i<signalements.get_List_Signalement().size();i++) {
-        			TreeItem<String> name = new TreeItem<String>(listSignal.get(i).get_scientificName());
-        			TreeItem<String> order = new TreeItem<String>("order: "+listSignal.get(i).get_order());
-        			TreeItem<String> superclass = new TreeItem<String>("superclass: "+listSignal.get(i).get_superclass());
-        			TreeItem<String> recordedBy = new TreeItem<String>("recordedBy: "+listSignal.get(i).get_recordedBy());
-        			TreeItem<String> species = new TreeItem<String>("species: "+listSignal.get(i).get_species());
+        		for(int i=0;i<listSignal.size();i++) {
+        			Signalement listSignalIndex = listSignal.get(i);
+        			TreeItem<String> name = new TreeItem<String>("scientificName: "+listSignalIndex.get_scientificName());
+        			TreeItem<String> order = new TreeItem<String>("order: "+listSignalIndex.get_order());
+        			TreeItem<String> superclass = new TreeItem<String>("superclass: "+listSignalIndex.get_superclass());
+        			TreeItem<String> recordedBy = new TreeItem<String>("recordedBy: "+listSignalIndex.get_recordedBy());
+        			TreeItem<String> species = new TreeItem<String>("species: "+listSignalIndex.get_species());
         			name.getChildren().addAll(order,superclass,recordedBy,species);
         			root.getChildren().addAll(name);
         		}
