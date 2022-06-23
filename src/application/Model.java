@@ -67,10 +67,10 @@ public class Model {
         for(int i=0;i<registeredList.size();i++) {
         	ArrayList<Point2D> region = registeredList.get(i).get_region();
         	
-        	Point3D spaceCoord0 = geoCoordTo3dCoord((float)region.get(0).getY(), (float)region.get(0).getX());
-        	Point3D spaceCoord1 = geoCoordTo3dCoord((float)region.get(1).getY(), (float)region.get(1).getX());
-        	Point3D spaceCoord2 = geoCoordTo3dCoord((float)region.get(2).getY(), (float)region.get(2).getX());
-        	Point3D spaceCoord3 = geoCoordTo3dCoord((float)region.get(3).getY(), (float)region.get(3).getX());
+        	Point3D spaceCoord0 = geoCoordTo3dCoord((float)region.get(0).getY(), (float)region.get(0).getX()).multiply(1.01);
+        	Point3D spaceCoord1 = geoCoordTo3dCoord((float)region.get(1).getY(), (float)region.get(1).getX()).multiply(1.01);
+        	Point3D spaceCoord2 = geoCoordTo3dCoord((float)region.get(2).getY(), (float)region.get(2).getX()).multiply(1.01);
+        	Point3D spaceCoord3 = geoCoordTo3dCoord((float)region.get(3).getY(), (float)region.get(3).getX()).multiply(1.01);
         	
         	if(registeredList.get(i).get_nombre()<=tableauEchelle[0]) {
         		AddQuadrilateral(group,spaceCoord2,spaceCoord1,spaceCoord0,spaceCoord3,material1);
