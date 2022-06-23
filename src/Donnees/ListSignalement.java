@@ -6,24 +6,43 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import Json.Json;
 
+/**
+ * La classe implémentant une liste de signalement
+ * @author Julian COYNEL
+ *
+ */
 public class ListSignalement {
+	/**
+	 * La liste des Signalements
+	 */
 	private ArrayList<Signalement> list;
 	
+	/**
+	 * La méthode pour innitialisé la liste des Signalements
+	 */
 	ListSignalement() {
 		list=new ArrayList<Signalement>();
 	}
 	
-	public void add_Signalement(Signalement s) {
+	/**
+	 * La fonction permetant de rajouter un Signalement a la liste
+	 * @param s le Signalement a rajouté a la liste
+	 */
+	private void add_Signalement(Signalement s) {
 		list.add(s);
 	}
 	
-	
+	/**
+	 * La fonction permetant de rajouter tous les Signalements présents dans une requête Json dans la liste
+	 * @param jsonRoot la requête qui contient les signalements
+	 */
 	private void add_Signalement(JSONObject jsonRoot) {
 		JSONArray resultatRecherche = jsonRoot.getJSONArray("results");
 		int taille=resultatRecherche.length();
 		for(int i=0;i<taille;i++) {
 			JSONObject article = resultatRecherche.getJSONObject(i);
 			String scientificName;
+			//Certains signalement ne comportant pas tous les champs on a été obligés de faire un try cathc pour ne pas avoir de problémes 
 			try(StringReader test_nomscientific=new StringReader(article.getString("scientificName"))) {
 				scientificName=article.getString("scientificName");
 			}
@@ -64,7 +83,11 @@ public class ListSignalement {
 		}
 	}
 	
-	
+	/**
+	 * La fonction qui permet d'initialise la liste d'espece étant donnée qu'on ne prend pas en compte un nom d'espèce
+	 * @param GeoHash la région de recherche
+	 * @return ListSignalement la liste d'espèce
+	 */
 	public static ListSignalement set_Liste_Espece(String GeoHash) {
 		ListSignalement l=new ListSignalement();
 		JSONObject jsonRoot=Json.liste_Espece_GeoHash(GeoHash);
@@ -72,6 +95,10 @@ public class ListSignalement {
 		return l;
 	}
 	
+	/**
+	 * La fonction permettant de retourner une liste de nom d'espèce
+	 * @return ArrayList<String> la liste des noms d'espèces
+	 */
 	public ArrayList<String> get_Liste_Espece(){
 		ArrayList<String> ls=new ArrayList<String>();
 		for(Signalement s : list) {
@@ -80,6 +107,12 @@ public class ListSignalement {
 		return ls;
 	}
 	
+	/**
+	 * La fonction qui permet de connaître toutes les informations d'une espèce dans une région donné
+	 * @param nom le nom de l'espèce
+	 * @param GeoHash la région de recherche
+	 * @return ListSignalement la liste des Signalement de l'espèce donné dans la région donné
+	 */
 	public static ListSignalement set_Liste_information_Espece(String nom,String GeoHash) {
 		ListSignalement l=new ListSignalement();
 		JSONObject jsonRoot=Json.details_Enregistrement_GeoHash(nom, GeoHash);
@@ -87,6 +120,10 @@ public class ListSignalement {
 		return l;
 	}
 	
+	/**
+	 * La fonction qui renvoit la liste des Signalements
+	 * @return ArrayList<Signalement> la liste des Signalements
+	 */
 	public ArrayList<Signalement> get_List_Signalement(){
 		return list;
 	}

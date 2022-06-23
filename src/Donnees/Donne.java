@@ -10,17 +10,37 @@ import com.ludovic.vimont.Location;
 
 import Json.Json;
 
+/**
+ * La classe permettant d'avoir une liste d'Enregistrement et des fonctions pour l'utiliser
+ * @author Julian COYNEL
+ *
+ */
 public class Donne {
+	/**
+	 * La liste des Enregistrements
+	 */
 	private ArrayList<Enregistrement> list;
 	
+	/**
+	 * La méthode permetant d'initialiser la liste des Enregistrements
+	 */
 	Donne() {
 		list=new ArrayList<Enregistrement>();
 	}
 	
-	void add_Enregistrement(Enregistrement e) {
+	/**
+	 * La fonction permetant d'ajouter un Enregistrement a la list
+	 * @param e L'Enregistrement a ajouté a la list
+	 */
+	private void add_Enregistrement(Enregistrement e) {
 		list.add(e);
 	}
 	
+	/**
+	 * La fonction permetant d'ajouter les Enregistrements de'une requête Json
+	 * @param jsonRoot La requête Json contenant les Enregistrements
+	 * @param nom le nom de l'espèce enregistré
+	 */
 	private void add_Enregistrement(JSONObject jsonRoot,String nom) {
 		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
 		int taille=resultatRecherche.length();
@@ -33,6 +53,13 @@ public class Donne {
 		}
 	}
 	
+	/**
+	 *  La fonction permetant d'ajouter les Enregistrements de'une requête Json entre une date de début et de fin 
+	 * @param jsonRoot La requête Json contenant les Enregistrements
+	 * @param nom le nom de l'espèce enregistré
+	 * @param date_debut la date de début de l'Enregistrement
+	 * @param date_fin la date de fin de l'Enregistrement
+	 */
 	private void add_Enregistrement(JSONObject jsonRoot,String nom,LocalDate date_debut,LocalDate date_fin) {
 		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
 		int taille=resultatRecherche.length();
@@ -45,6 +72,10 @@ public class Donne {
 		}
 	}
 	
+	/**
+	 * La fonction permetant d'initaliser l'application avec soit le fichier Selachii.json soit Delphinidae.json avec 50% de chance pour les deux
+	 * @return Donne les Enregistrements de selachii ou de delphinidae avec 50% de chance pour les deux
+	 */
 	public static Donne init() {
 		double nb;
 		nb = Math.random();
@@ -56,6 +87,10 @@ public class Donne {
 		}
 	}
 	
+	/**
+	 * La fonction permetant d'initaliser l'application avec le fichier Delphinidae.json
+	 * @return Donne les Enregistrements de delphinidae
+	 */
 	private static Donne init_delphinidae() {
 		Donne d=new Donne();
 		JSONObject jsonRoot=Json.init_delphinidae();
@@ -63,6 +98,10 @@ public class Donne {
 		return d;
 	}
 	
+	/**
+	 * La fonction permetant d'initaliser l'application avec le fichier Selachii.json
+	 * @return Donne les Enregistrements de selachii
+	 */
 	private static Donne init_selachii() {
 		Donne d=new Donne();
 		JSONObject jsonRoot=Json.init_selachii();

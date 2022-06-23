@@ -43,23 +43,42 @@ public class Signalement {
 		this.species=species;
 	}
 	
-	
+	/**
+	 * La fonction renvoyant Le nom scientifique de l'espèce signalée
+	 * @return scientificName Le nom scientifique de l'espèce signalée
+	 */
 	public String get_scientificName() {
 		return this.scientificName;
 	}
 	
+	/**
+	 * La fonction renvoyant L'ordre de lespèce signalée
+	 * @return order L'ordre de lespèce signalée
+	 */
 	public String get_order() {
 		return this.order;
 	}
 	
+	/**
+	 * La fonction renvoyant La superclass de l'espèce signalée
+	 * @return superclass La superclass de l'espèce signalée
+	 */
 	public String get_superclass() {
 		return this.superclass;
 	}
 	
+	/**
+	 * La fonction renvoyant La personne qui a enregistré le signalement
+	 * @return recordedBy La personne qui a enregistré le signalement
+	 */
 	public String get_recordedBy() {
 		return this.recordedBy;
 	}
 	
+	/**
+	 * La fonction renvoyant Le nom de l'espèce signalée
+	 * @return species Le nom de l'espèce signalée
+	 */
 	public String get_species() {
 		return this.species;
 	}
