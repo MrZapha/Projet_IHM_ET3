@@ -7,6 +7,7 @@ import Donnees.Enregistrement;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -23,7 +24,7 @@ public class Model {
     private static final float TEXTURE_LON_OFFSET = 2.8f;
     private static final float TEXTURE_OFFSET = 1.01f;
     
-    public static void firstDraw(Group parent,TextField txtEspece,Donne d) {
+    public static void firstDraw(Group parent,TextField txtEspece,Donne d,Label[] labelLegende) {
     	//Draw from Json Delphinidae file
         ArrayList<Enregistrement> registeredList = d.get_list();
         Group group = new Group();
@@ -59,7 +60,9 @@ public class Model {
         int[] tableauEchelle = new int[8];
         for(int i=0;i<8;i++) {
         	tableauEchelle[i] = (i+1)*max/8;
-        	
+        	if(i>0 && i<8) {
+        		labelLegende[i-1].setText(""+tableauEchelle[i]);
+        	}
         }
         for(int i=0;i<registeredList.size();i++) {
         	ArrayList<Point2D> region = registeredList.get(i).get_region();
@@ -92,10 +95,10 @@ public class Model {
         
     }
 
-	public static void drawHistogram(Group parent,Donne d,int precisionGeoHash) {
+	public static void drawHistogram(Group parent,Donne d,int precisionGeoHash,Label[] labelLegende) {
         ArrayList<Enregistrement> registeredList = d.get_list();
         Group group = new Group();
-        double diameter = 0.01f;
+        double diameter = 0.03f/precisionGeoHash;
         
         final PhongMaterial material1 = new PhongMaterial();
         material1.setDiffuseColor(Color.rgb(255,255,204,0));
@@ -125,7 +128,9 @@ public class Model {
         int[] tableauEchelle = new int[8];
         for(int i=0;i<8;i++) {
         	tableauEchelle[i] = (i+1)*max/8;
-        	
+        	if(i>0 && i<8) {
+        		labelLegende[i-1].setText(""+tableauEchelle[i]);
+        	}
         }
         for(int i=0;i<registeredList.size();i++) {
         	ArrayList<Point2D> region = registeredList.get(i).get_region();

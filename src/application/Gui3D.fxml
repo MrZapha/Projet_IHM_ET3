@@ -19,25 +19,22 @@
             <Pane fx:id="pane3D" prefHeight="580.0" prefWidth="500.0" />
             <Pane prefHeight="60.0" prefWidth="500.0">
                <children>
-                  <Text layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Légende :" />
-                  <Pane layoutX="67.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" style="-fx-background-color: rgb(255,255,204);" />
-                  <Pane layoutX="107.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" style="-fx-background-color: rgb(255,237,160)" />
-                  <Pane layoutX="147.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" style="-fx-background-color: rgb(254,217,118)" />
-                  <Pane layoutX="187.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" style="-fx-background-color: rgb(254,178,76)" />
-                  <Pane layoutX="227.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" style="-fx-background-color: rgb(253,141,60)" />
-                  <Pane layoutX="267.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" style="-fx-background-color: rgb(252,78,42)" />
-                  <Pane layoutX="307.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" style="-fx-background-color: rgb(227,26,28)" />
-                  <Pane layoutX="347.0" layoutY="15.0" prefHeight="30.0" prefWidth="40.0" style="-fx-background-color: rgb(177,0,38)" />
-                  <Text layoutX="64.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
-                  <Text layoutX="104.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1" />
-                  <Text layoutX="144.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2" />
-                  <Text layoutX="184.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3" />
-                  <Text layoutX="224.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" />
-                  <Text layoutX="264.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="5" />
-                  <Text layoutX="304.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="6" />
-                  <Text layoutX="344.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="7" />
-                  <Text layoutX="384.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="8" />
-                  <Text layoutX="395.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="On divise en 8 le plus grand nombre d'occurences." wrappingWidth="104.66015625" />
+                  <Pane layoutX="10.0" layoutY="14.0" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: rgb(255,255,204);" />
+                  <Pane layoutX="70.0" layoutY="15.0" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: rgb(255,237,160)" />
+                  <Pane layoutX="130.0" layoutY="15.0" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: rgb(254,217,118)" />
+                  <Pane layoutX="190.0" layoutY="15.0" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: rgb(254,178,76)" />
+                  <Pane layoutX="250.0" layoutY="15.0" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: rgb(253,141,60)" />
+                  <Pane layoutX="310.0" layoutY="15.0" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: rgb(252,78,42)" />
+                  <Pane layoutX="370.0" layoutY="15.0" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: rgb(227,26,28)" />
+                  <Pane layoutX="430.0" layoutY="15.0" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: rgb(177,0,38)" />
+                  <Label fx:id="label1" layoutX="58.0" layoutY="42.0" text="Label" />
+                  <Label fx:id="label2" layoutX="118.0" layoutY="42.0" text="Label" />
+                  <Label fx:id="label3" layoutX="178.0" layoutY="42.0" text="Label" />
+                  <Label fx:id="label4" layoutX="238.0" layoutY="42.0" text="Label" />
+                  <Label fx:id="label5" layoutX="298.0" layoutY="42.0" text="Label" />
+                  <Label fx:id="label6" layoutX="358.0" layoutY="42.0" text="Label" />
+                  <Label fx:id="label7" layoutX="418.0" layoutY="42.0" text="Label" />
+                  <Text layoutX="8.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
                </children>
             </Pane>
          </children>

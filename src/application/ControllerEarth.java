@@ -87,6 +87,27 @@ public class ControllerEarth implements Initializable {
 	@FXML
 	private Label labelEspece;
 	
+	@FXML
+	private Label label1;
+	
+	@FXML
+	private Label label2;
+	
+	@FXML
+	private Label label3;
+	
+	@FXML
+	private Label label4;
+	
+	@FXML
+	private Label label5;
+	
+	@FXML
+	private Label label6;
+	
+	@FXML
+	private Label label7;
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
         //Create a Pane et graph scene root for the 3D content
@@ -124,8 +145,10 @@ public class ControllerEarth implements Initializable {
         
       //Drawing from file, either Delphinidae.json or Selachii.json with a 50/50% chance
         Donne d = Donne.init();
+        label1.setText("ou");
+        Label[] labelLegende = {label1,label2,label3,label4,label5,label6,label7};
         txtPreciGeo.setText("3");
-        Model.firstDraw(earth,txtEspece,d);
+        Model.firstDraw(earth,txtEspece,d,labelLegende);
         
         // Create scene
         // ...
@@ -146,6 +169,7 @@ public class ControllerEarth implements Initializable {
         			labelEspece.setText("");
         		
         			if (items.size() == 0 && txtEspece.getLength() > 0 ) {
+        				labelEspece.setTextFill(Color.RED);
         				labelEspece.setText("Aucune espèce trouvée.");
         			}
         		}
@@ -176,7 +200,7 @@ public class ControllerEarth implements Initializable {
                 	}
                 	Donne d = Donne.donne_From_URL(txtEspece.getText(),Integer.valueOf(txtPreciGeo.getText()));
                 	earth.getChildren().subList(1, earth.getChildren().size()).clear();
-                	Model.drawHistogram(earth,d,Integer.valueOf(txtPreciGeo.getText()));
+                	Model.drawHistogram(earth,d,Integer.valueOf(txtPreciGeo.getText()),labelLegende);
                 }
             }
         });
