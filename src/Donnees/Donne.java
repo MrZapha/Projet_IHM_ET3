@@ -38,22 +38,6 @@ public class Donne {
 		list.add(e);
 	}
 	
-	/**
-	 * La fonction permetant d'ajouter les Enregistrements de'une requête Json
-	 * @param jsonRoot La requête Json contenant les Enregistrements
-	 * @param nom le nom de l'espèce enregistré
-	 */
-	private void add_Enregistrement(JSONObject jsonRoot,String nom) {
-		JSONArray resultatRecherche = jsonRoot.getJSONArray("features");
-		int taille=resultatRecherche.length();
-		for(int i=0;i<taille;i++) {
-			JSONObject article = resultatRecherche.getJSONObject(i);
-	   		int nb=article.getJSONObject("properties").getInt("n");
-	   		JSONObject geometry =article.getJSONObject("geometry");
-	   		Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),nom,nb);
-	   		this.add_Enregistrement(e);
-		}
-	}
 	
 	/**
 	 *  La fonction permetant d'ajouter les Enregistrements de'une requête Json entre une date de début et de fin 
@@ -68,14 +52,33 @@ public class Donne {
 			int taille=resultatRecherche.length();
 			for(int i=0;i<taille;i++) {
 				JSONObject article = resultatRecherche.getJSONObject(i);
-				int nb=article.getJSONObject("properties").getInt("n");
-				JSONObject geometry =article.getJSONObject("geometry");
-				Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),nom,nb,date_debut,date_fin);
-				this.add_Enregistrement(e);
+				int nb=0;
+				if(!article.isNull("properties")) {
+					nb=article.getJSONObject("properties").getInt("n");
+				}
+				if(!article.isNull("geometry")) {
+					JSONObject geometry =article.getJSONObject("geometry");
+					if(!geometry.isNull("coordinates")) {
+						Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),nom,nb,date_debut,date_fin);
+						this.add_Enregistrement(e);
+						return;
+					}
+				}
+				System.out.println("L'espèce a été trouvée null-part");
 			}
 			return;
 		}
 		System.out.println("Aucune espèce trouvée");
+	}
+	
+	
+	/**
+	 * La fonction permetant d'ajouter les Enregistrements de'une requête Json
+	 * @param jsonRoot La requête Json contenant les Enregistrements
+	 * @param nom le nom de l'espèce enregistré
+	 */
+	private void add_Enregistrement(JSONObject jsonRoot,String nom) {
+		this.add_Enregistrement(jsonRoot, nom, LocalDate.now(), LocalDate.now());
 	}
 	
 	/**
