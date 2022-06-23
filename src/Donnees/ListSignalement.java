@@ -28,35 +28,35 @@ public class ListSignalement {
 				scientificName=article.getString("scientificName");
 			}
 			catch(org.json.JSONException e) {
-				scientificName="Cette espèce n'as pas de nom scientifique";
+				scientificName="N/A";
 			};
 			String order;
 			try(StringReader test_order=new StringReader(article.getString("order"))) {
 				order=article.getString("order");
 			}
 			catch(org.json.JSONException e) {
-				order="Cette espèce n'as pas d'ordre";
+				order="N/A";
 			};
 			String superclass;
 			try(StringReader test_superclass=new StringReader(article.getString("parvphylum"))) {
 				superclass=article.getString("parvphylum");
 			}
 			catch(org.json.JSONException e) {
-				superclass="Cette espèce n'as pas de super class";
+				superclass="N/A";
 			};
 			String recordedBy;
 			try(StringReader test_recordeBy=new StringReader(article.getString("scientificNameAuthorship"))) {
 				recordedBy=article.getString("scientificNameAuthorship");
 			}
 			catch(org.json.JSONException e) {
-				recordedBy="Ce signalement n'as pas d'auteur";
+				recordedBy="N/A";
 			};
 			String species;
 			try(StringReader test_species=new StringReader(article.getString("species"))) {
 				species=article.getString("species");
 			}
 			catch(org.json.JSONException e) {
-				species="Cette espèce n'as pas de nom d'espèce";
+				species="N/A";
 			};
 	   		Signalement s=new Signalement(scientificName,order,superclass
 	   				,recordedBy,species);

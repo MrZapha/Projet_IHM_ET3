@@ -15,6 +15,7 @@ import com.ludovic.vimont.Location;
 import Donnees.Donne;
 import application.Model;
 import Donnees.ListSignalement;
+import Donnees.Signalement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -201,9 +202,11 @@ public class ControllerEarth implements Initializable {
         		
         		ListSignalement signalements = ListSignalement.set_Liste_Espece(txtLocaGeo.getText());
         		
-        		ArrayList<String> listSignal = signalements.get_Liste_Espece();
-        		ObservableList<String> itemsListView = FXCollections.observableArrayList(listSignal);
+        		ArrayList<String> listEspSignal = signalements.get_Liste_Espece();
+        		ObservableList<String> itemsListView = FXCollections.observableArrayList(listEspSignal);
         		listEspece.setItems(itemsListView);
+        		
+        		ArrayList<Signalement> listSignal = signalements.get_List_Signalement();
         		
         		TreeItem<String> root = new TreeItem<String>("root");
         		root.setExpanded(true);
@@ -211,11 +214,11 @@ public class ControllerEarth implements Initializable {
         		treeSignalement.setShowRoot(false);
         		
         		for(int i=0;i<signalements.get_List_Signalement().size();i++) {
-        			TreeItem<String> name = new TreeItem<String>("scientificName "+signalements.get_List_Signalement());
-        			TreeItem<String> order = new TreeItem<String>("order ");
-        			TreeItem<String> superclass = new TreeItem<String>("superclass ");
-        			TreeItem<String> recordedBy = new TreeItem<String>("recordedBy ");
-        			TreeItem<String> species = new TreeItem<String>("species ");
+        			TreeItem<String> name = new TreeItem<String>(listSignal.get(i).get_scientificName());
+        			TreeItem<String> order = new TreeItem<String>("order: "+listSignal.get(i).get_order());
+        			TreeItem<String> superclass = new TreeItem<String>("superclass: "+listSignal.get(i).get_superclass());
+        			TreeItem<String> recordedBy = new TreeItem<String>("recordedBy: "+listSignal.get(i).get_recordedBy());
+        			TreeItem<String> species = new TreeItem<String>("species: "+listSignal.get(i).get_species());
         			name.getChildren().addAll(order,superclass,recordedBy,species);
         			root.getChildren().addAll(name);
         		}
