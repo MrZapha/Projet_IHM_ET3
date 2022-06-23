@@ -29,6 +29,7 @@ import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeView;
@@ -84,6 +85,9 @@ public class ControllerEarth implements Initializable {
 	@FXML
 	private ListView listEspece;
 	
+	@FXML
+	private Label labelEspece;
+	
     private static final float TEXTURE_LAT_OFFSET = -0.2f;
     private static final float TEXTURE_LON_OFFSET = 2.8f;
     private static final float TEXTURE_OFFSET = 1.01f;
@@ -138,11 +142,11 @@ public class ControllerEarth implements Initializable {
         txtEspece.setOnKeyReleased(new EventHandler<KeyEvent>() {
         	@Override
         	public void handle(KeyEvent event) {
-        		ObservableList<String> items = FXCollections.observableArrayList(Json.completeSpecies(txtEspece.getText()));
+        		ObservableList<String> items = FXCollections.observableArrayList(Donne.completeSpecies(txtEspece.getText()));
         		TextFields.bindAutoCompletion(txtEspece, items);
         		
         		if (items.size() == 0 && txtEspece.getLength() > 0 ) {
-        			System.out.println("Erreur pas de résultats, à gérer");
+        			labelEspece.setText("Aucune espèce trouvée.");
         		}
         	}
         	
@@ -213,7 +217,7 @@ public class ControllerEarth implements Initializable {
         int[] tableauEchelle = new int[8];
         for(int i=0;i<8;i++) {
         	tableauEchelle[i] = (i+1)*max/8;
-        	System.out.println(tableauEchelle[i]);
+        	
         }
         for(int i=0;i<registeredList.size();i++) {
         	ArrayList<Point2D> region = registeredList.get(i).get_region();
