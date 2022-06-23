@@ -1,4 +1,4 @@
-module Projet_IHM_Obis3D{
+module Projet_IHM_ET3{
 	requires javafx.controls;
 	requires javafx.fxml;
 	requires java.net.http;

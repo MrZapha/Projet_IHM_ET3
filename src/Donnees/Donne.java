@@ -80,6 +80,17 @@ public class Donne {
 		
 	}*/
 	
+	public static ArrayList<String> completeSpecies(String texte){
+		JSONArray jsonRoot=Json.completeSpecies(texte);
+		ArrayList<String> listCompletion=new ArrayList<String>();
+		int taille=jsonRoot.length();
+		for(int i=0;i<taille;i++) {
+			JSONArray espece=jsonRoot.getJSONArray(i);
+			listCompletion.add(espece.getString(1));
+		}	
+		return listCompletion;
+	}
+	
 	public ArrayList<Enregistrement> get_list() {
 		return list;
 	}

@@ -52,6 +52,30 @@ public class Json {
 		return new JSONObject(json);
 	}
 	
+	static JSONArray readJsonFromUrlArray(String url) {
+		String json="";
+		HttpClient client = HttpClient.newBuilder()
+				.version(Version.HTTP_1_1)
+				.followRedirects(Redirect.NORMAL)
+				.connectTimeout(Duration.ofSeconds(20))
+				.build();
+		
+		HttpRequest request =HttpRequest.newBuilder()
+				.uri(URI.create(url))
+				.timeout(Duration.ofMinutes(2))
+				.header("Content-Type", "application/json")
+			.GET()
+			.build();
+		
+		try {
+			json=client.sendAsync(request, BodyHandlers.ofString())
+					.thenApply(HttpResponse::body).get(10,TimeUnit.SECONDS);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return new JSONArray(json);
+	}
+	
 	public static JSONObject readJsonWithGeoHash(String nom,int nb_caractere) {
 		String s="https://api.obis.org/v3/occurrence/grid/"+nb_caractere+"?scientificname="+nom;
 		return readJsonFromUrl(s);
@@ -59,7 +83,6 @@ public class Json {
 	
 	public static JSONObject readJsonWithGeoHashAndTime(String nom,int nb_caractere,LocalDate date_debut,LocalDate date_fin) {
 		String s="https://api.obis.org/v3/occurrence/grid/"+nb_caractere+"?scientificname="+nom+"&startdate="+date_debut+"&enddate="+date_fin;
-		System.out.println(s);
 		return readJsonFromUrl(s);
 	}
 	
@@ -85,6 +108,12 @@ public class Json {
         	e.printStackTrace();
         	return null;
         }
+	}
+	
+	
+	public static JSONArray completeSpecies(String texte) {
+		String s="https://api.obis.org/v3/taxon/complete/verbose/"+texte;
+		return readJsonFromUrlArray(s);
 	}
 	
 	public static void main(String args[]) {
