@@ -18,12 +18,32 @@ import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 
+/**
+ * La classe Model de notre application
+ * @author Romain BAUDOUIN Julian COYNEL
+ *
+ */
 public class Model {
-	
+	/**
+	 * Initialise la valeurs pour corriger la latitude lors de la conversion d'un points 3D vers un point sur la Terre et inversement 
+	 */
     private static final float TEXTURE_LAT_OFFSET = -0.2f;
+    /**
+	 * Initialise la valeurs pour corriger la longitude lors de la conversion d'un points 3D vers un point sur la Terre et inversement 
+	 */
     private static final float TEXTURE_LON_OFFSET = 2.8f;
+    /**
+     * Initialise la valeur pour corriger les calculs lors de la conversion d'un points 3D vers un point sur la Terre et inversement 
+     */
     private static final float TEXTURE_OFFSET = 1.01f;
     
+    /**
+     * La fonction qui permet l'affichage lors de l'initialisation de l'aplication
+     * @param parent le group qui contient tous ce qu'on va dessiner
+     * @param txtEspece le nom de l'espèce représentée
+     * @param d les donnees a affiche
+     * @param labelLegende le label pour la légende
+     */
     public static void firstDraw(Group parent,TextField txtEspece,Donne d,Label[] labelLegende) {
     	//Draw from Json Delphinidae file
         ArrayList<Enregistrement> registeredList = d.get_list();
@@ -94,7 +114,14 @@ public class Model {
         parent.getChildren().addAll(group);
         
     }
-
+    
+    /**
+     * La fonction qui permet d'afficher des histogrames, qui ont une taille variable en fonction de la population de l'espèce, sur la Terre
+     * @param parent le group qui contient tous ce qui est affiché a l'écran
+     * @param d les donnees qui vont être affiché sous forme d'histogramme
+     * @param precisionGeoHash la précision du geohash pour les zones ou l'espèces est présentes
+     * @param labelLegende la légende pour les histogrammes
+     */
 	public static void drawHistogram(Group parent,Donne d,int precisionGeoHash,Label[] labelLegende) {
         ArrayList<Enregistrement> registeredList = d.get_list();
         Group group = new Group();
@@ -176,40 +203,18 @@ public class Model {
         }
         parent.getChildren().addAll(group);
 	}
+
+
 	
-    public static void circleEarth(Group parent) {
-    	final PhongMaterial greenMaterial = new PhongMaterial();
-        greenMaterial.setDiffuseColor(Color.rgb(0,150,0,0));
-        greenMaterial.setSpecularColor(Color.GREEN);
-        final PhongMaterial redMaterial = new PhongMaterial();
-        redMaterial.setDiffuseColor(Color.rgb(150,0,0,0));
-        redMaterial.setSpecularColor(Color.RED);
-        boolean redOrGreen = true; //true = vert false = red
-        for(float latitude=-90;latitude<90;latitude+=10) {
-        	for(float longitude=-180;longitude<180;longitude+=10) {
-        		Point3D TopRight = geoCoordTo3dCoord((float)latitude+10,(float)longitude+10).multiply(1.01);
-        		Point3D TopLeft = geoCoordTo3dCoord((float)latitude+10,(float)longitude).multiply(1.01);
-        		Point3D BotRight = geoCoordTo3dCoord((float)latitude,(float)longitude+10).multiply(1.01);
-        		Point3D BotLeft = geoCoordTo3dCoord((float)latitude,(float)longitude).multiply(1.01);
-        		if(redOrGreen) {
-        			AddQuadrilateral(parent, TopRight, BotRight, BotLeft, TopLeft,greenMaterial);
-        			redOrGreen = false;
-        		}
-        		else {
-        			AddQuadrilateral(parent, TopRight, BotRight, BotLeft, TopLeft,redMaterial);
-        			redOrGreen = true;
-        		}
-        	}
-        	if(redOrGreen) {
-        		redOrGreen = false;
-        	}else {
-        		redOrGreen = true;
-        	}
-        }		
-    }
-
-
-    // From Rahel LÃ¼thy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
+	
+	/**
+	 * // From Rahel LÃ¼thy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
+	 * La fonction permet de dessiner des cylindre sur la Terre
+	 * @param origin l'origine du cylindre
+	 * @param target l'endroit où le cylindre doit finir
+	 * @param diameter le diamétre du cylindre
+	 * @return Cylinder le cylindre créer
+	 */
     public static Cylinder createLine(Point3D origin, Point3D target,double diameter) {
         Point3D yAxis = new Point3D(0, 1, 0);
         Point3D diff = target.subtract(origin);
@@ -229,6 +234,12 @@ public class Model {
         return line;
     }
 
+    /**
+     * Transforme un point sur la Terre en point 3D
+     * @param lat la latitude du point sur la Terre
+     * @param lon la longitude du point sur la Terre
+     * @return v le point 3D correspondant au point qui était sur la Terre
+     */
     public static Point3D geoCoordTo3dCoord(float lat, float lon) {
         float lat_cor = lat + TEXTURE_LAT_OFFSET;
         float lon_cor = lon + TEXTURE_LON_OFFSET;
@@ -240,6 +251,11 @@ public class Model {
                         * java.lang.Math.cos(java.lang.Math.toRadians(lat_cor)));
     }
     
+    /**
+     * Transforme un point 3D en point qui doit être sur la Terre
+     * @param p le point a transformé
+     * @return Point2D le point transformé
+     */
     public static Point2D SpaceCoordToGeoCoord(Point3D p) {
     	float lat = (float)(Math.asin(-p.getY() / TEXTURE_OFFSET));
     	float lon;
@@ -255,23 +271,15 @@ public class Model {
     	return new Point2D(lat,lon);
     }
     
-    public static void displayTown(Group parent, String name, float latitude, float longitude) {
-    	Sphere sphere = new Sphere(0.01);
-    	sphere.setId(name);
-    	
-    	Point3D sphere3D = geoCoordTo3dCoord(latitude,longitude);
-    	
-    	final PhongMaterial greenMaterial = new PhongMaterial();
-        greenMaterial.setDiffuseColor(Color.GREEN);
-        greenMaterial.setSpecularColor(Color.GREEN);
-        sphere.setMaterial(greenMaterial);
-    	
-    	sphere.setTranslateX(sphere3D.getX());
-    	sphere.setTranslateY(sphere3D.getY());
-    	sphere.setTranslateZ(sphere3D.getZ());
-    	parent.getChildren().add(sphere);
-    }
-    
+    /**
+     * La fonction qui permet d'afficher des quadrilatéres sur la Terre
+     * @param parent le group qui contient tous ce qui est affiché a l'écran
+     * @param topRight le point qui est en haut a droite du quadrilatére
+     * @param bottomRight le point qui est en bas a droite du quadrilatére
+     * @param bottomLeft le point qui est en bas a gauche du quadrilatére
+     * @param topLeft le point qui est en haut a gauche du quadrilatére
+     * @param material le materiel avec lequel on veut afficher le quadrilatére
+     */
     private static void AddQuadrilateral(Group parent, Point3D topRight, Point3D bottomRight, Point3D bottomLeft, Point3D topLeft,
     		 PhongMaterial material) {
     	final TriangleMesh triangleMesh = new TriangleMesh();
