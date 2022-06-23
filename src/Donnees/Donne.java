@@ -61,10 +61,9 @@ public class Donne {
 					if(!geometry.isNull("coordinates")) {
 						Enregistrement e=new Enregistrement(geometry.getJSONArray("coordinates").getJSONArray(0),nom,nb,date_debut,date_fin);
 						this.add_Enregistrement(e);
-						return;
+						
 					}
 				}
-				System.out.println("L'espèce a été trouvée null-part");
 			}
 			return;
 		}
