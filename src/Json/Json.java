@@ -115,11 +115,15 @@ public class Json {
         }
 	}
 	
+	public static JSONObject liste_Espece_GeoHash(String GeoHash) {
+		String s="https://api.obis.org/v3/occurrence?";
+		s+="geometry="+GeoHash;
+		return readJsonFromUrl(s);
+	}
+	
 	public static JSONObject details_Enregistrement_GeoHash(String nom,String GeoHash) {
 		String s="https://api.obis.org/v3/occurrence?";
-		if(!nom.equals("")) {
-			s+=testnom(nom)+"&";
-		}
+		s+=testnom(nom)+"&";
 		s+="geometry="+GeoHash;
 		return readJsonFromUrl(s);
 	}

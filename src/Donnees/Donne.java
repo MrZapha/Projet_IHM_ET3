@@ -49,7 +49,6 @@ public class Donne {
 		double nb;
 		nb = Math.random();
 		if (nb>=0.5) {
-			System.out.println("requin");
 			return init_selachii();
 		}
 		else {
