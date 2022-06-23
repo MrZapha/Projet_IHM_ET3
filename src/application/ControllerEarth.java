@@ -142,11 +142,14 @@ public class ControllerEarth implements Initializable {
         txtEspece.setOnKeyReleased(new EventHandler<KeyEvent>() {
         	@Override
         	public void handle(KeyEvent event) {
-        		ObservableList<String> items = FXCollections.observableArrayList(Donne.completeSpecies(txtEspece.getText()));
-        		TextFields.bindAutoCompletion(txtEspece, items);
+        		if(txtEspece.getLength()>3) {
+        			ObservableList<String> items = FXCollections.observableArrayList(Donne.completeSpecies(txtEspece.getText()));
+        			TextFields.bindAutoCompletion(txtEspece, items);
+        			labelEspece.setText("");
         		
-        		if (items.size() == 0 && txtEspece.getLength() > 0 ) {
-        			labelEspece.setText("Aucune espèce trouvée.");
+        			if (items.size() == 0 && txtEspece.getLength() > 0 ) {
+        				labelEspece.setText("Aucune espèce trouvée.");
+        			}
         		}
         	}
         	

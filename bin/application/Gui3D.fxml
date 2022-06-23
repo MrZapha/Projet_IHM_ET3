@@ -37,6 +37,7 @@
                   <Text layoutX="304.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="6" />
                   <Text layoutX="344.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="7" />
                   <Text layoutX="384.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="8" />
+                  <Text layoutX="395.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="On divise en 8 le plus grand nombre d'occurences." wrappingWidth="104.66015625" />
                </children>
             </Pane>
          </children>
