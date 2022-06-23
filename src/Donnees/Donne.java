@@ -76,7 +76,7 @@ public class Donne {
 		return d;
 	}
 	
-	/*public static Donne donne_From_URL_With_Time_Interval() {
+	/*public static Donne donne_From_URL_With_Time_Interval(String nom,int nb_caractere,LocalDate date_debut,,int nb_intervalle) {
 		
 	}*/
 	
@@ -85,8 +85,8 @@ public class Donne {
 		ArrayList<String> listCompletion=new ArrayList<String>();
 		int taille=jsonRoot.length();
 		for(int i=0;i<taille;i++) {
-			JSONArray espece=jsonRoot.getJSONArray(i);
-			listCompletion.add(espece.getString(1));
+			JSONObject espece=jsonRoot.getJSONObject(i);
+			listCompletion.add(espece.getString("scientificName"));
 		}	
 		return listCompletion;
 	}
