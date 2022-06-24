@@ -38,19 +38,15 @@ public class Model {
     private static final float TEXTURE_OFFSET = 1.01f;
     
     /**
-     * La fonction qui permet l'affichage lors de l'initialisation de l'aplication
+     * La fonction qui permet l'affichage lors de l'initialisation de l'application
      * @param parent le group qui contient tous ce qu'on va dessiner
-     * @param txtEspece le nom de l'espèce représentée
      * @param d les donnees a affiche
      * @param labelLegende le label pour la légende
      */
-    public static void firstDraw(Group parent,TextField txtEspece,Donne d,Label[] labelLegende) {
+    public static void firstDraw(Group parent,Donne d,Label[] labelLegende) {
     	//Draw from Json Delphinidae file
         ArrayList<Enregistrement> registeredList = d.get_list();
         Group group = new Group();
-        double diameter = 0.01f;
-        String nom = registeredList.get(0).get_nom();
-        txtEspece.setText(nom);
         
         final PhongMaterial material1 = new PhongMaterial();
         material1.setDiffuseColor(Color.rgb(255,255,204,0));
@@ -213,7 +209,7 @@ public class Model {
 	 * @param origin l'origine du cylindre
 	 * @param target l'endroit où le cylindre doit finir
 	 * @param diameter le diamétre du cylindre
-	 * @return Cylinder le cylindre créer
+	 * @return Cylinder le cylindre créé
 	 */
     public static Cylinder createLine(Point3D origin, Point3D target,double diameter) {
         Point3D yAxis = new Point3D(0, 1, 0);
