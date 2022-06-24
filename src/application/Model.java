@@ -8,12 +8,10 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.MeshView;
-import javafx.scene.shape.Sphere;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
@@ -25,11 +23,11 @@ import javafx.scene.transform.Translate;
  */
 public class Model {
 	/**
-	 * Initialise la valeurs pour corriger la latitude lors de la conversion d'un points 3D vers un point sur la Terre et inversement 
+	 * Initialise la valeur pour corriger la latitude lors de la conversion d'un points 3D vers un point sur la Terre et inversement 
 	 */
     private static final float TEXTURE_LAT_OFFSET = -0.2f;
     /**
-	 * Initialise la valeurs pour corriger la longitude lors de la conversion d'un points 3D vers un point sur la Terre et inversement 
+	 * Initialise la valeur pour corriger la longitude lors de la conversion d'un points 3D vers un point sur la Terre et inversement 
 	 */
     private static final float TEXTURE_LON_OFFSET = 2.8f;
     /**
@@ -39,8 +37,8 @@ public class Model {
     
     /**
      * La fonction qui permet l'affichage lors de l'initialisation de l'application
-     * @param parent le group qui contient tous ce qu'on va dessiner
-     * @param d les donnees a affiche
+     * @param parent le group qui contient tout ce qu'on va dessiner
+     * @param d les donnees a afficher
      * @param labelLegende le label pour la légende
      */
     public static void firstDraw(Group parent,Donne d,Label[] labelLegende) {
@@ -72,14 +70,8 @@ public class Model {
         final PhongMaterial material8 = new PhongMaterial();
         material8.setDiffuseColor(Color.rgb(177,0,38,0));
         
-        int max = registeredList.get(0).get_nombre();
-        int[] tableauEchelle = new int[8];
-        for(int i=0;i<8;i++) {
-        	tableauEchelle[i] = (i+1)*max/8;
-        	if(i>0 && i<8) {
-        		labelLegende[i-1].setText(""+tableauEchelle[i]);
-        	}
-        }
+        int[] tableauEchelle = updateLegend(registeredList,labelLegende);
+        
         for(int i=0;i<registeredList.size();i++) {
         	ArrayList<Point2D> region = registeredList.get(i).get_region();
         	
@@ -112,10 +104,10 @@ public class Model {
     }
     
     /**
-     * La fonction qui permet d'afficher des histogrames, qui ont une taille variable en fonction de la population de l'espèce, sur la Terre
+     * La fonction qui permet d'afficher des histogrammes, qui ont une taille variable en fonction de la population de l'espèce, sur la Terre
      * @param parent le group qui contient tous ce qui est affiché a l'écran
      * @param d les donnees qui vont être affiché sous forme d'histogramme
-     * @param precisionGeoHash la précision du geohash pour les zones ou l'espèces est présentes
+     * @param precisionGeoHash la précision du geohash pour les zones où l'espèce est présente
      * @param labelLegende la légende pour les histogrammes
      */
 	public static void drawHistogram(Group parent,Donne d,int precisionGeoHash,Label[] labelLegende) {
@@ -147,14 +139,8 @@ public class Model {
         final PhongMaterial material8 = new PhongMaterial();
         material8.setDiffuseColor(Color.rgb(177,0,38,0));
         
-        int max = registeredList.get(0).get_nombre();
-        int[] tableauEchelle = new int[8];
-        for(int i=0;i<8;i++) {
-        	tableauEchelle[i] = (i+1)*max/8;
-        	if(i>0 && i<8) {
-        		labelLegende[i-1].setText(""+tableauEchelle[i]);
-        	}
-        }
+        int[] tableauEchelle = updateLegend(registeredList,labelLegende);
+        
         for(int i=0;i<registeredList.size();i++) {
         	ArrayList<Point2D> region = registeredList.get(i).get_region();
         	
@@ -199,13 +185,110 @@ public class Model {
         }
         parent.getChildren().addAll(group);
 	}
-
-
 	
+	/**
+     * La fonction qui permet d'afficher des histogrammes, qui ont une taille variable en fonction de la population de l'espèce, sur la Terre
+     * @param parent le group qui contient tous ce qui est affiché a l'écran
+     * @param d les donnees qui vont être affiché sous forme d'histogramme
+     * @param precisionGeoHash la précision du geohash pour les zones où l'espèce est présente
+     * @param labelLegende la légende pour les histogrammes
+     * @param tableauEchelle notre tableau de nombre pour l'échelle afin de ne pas le recalculer
+     */
+	public static void drawHistogram(Group parent,Donne d,int precisionGeoHash,Label[] labelLegende,int[] tableauEchelle) {
+        ArrayList<Enregistrement> registeredList = d.get_list();
+        Group group = new Group();
+        double diameter = 0.03f/precisionGeoHash;
+        
+        final PhongMaterial material1 = new PhongMaterial();
+        material1.setDiffuseColor(Color.rgb(255,255,204,0));
+        
+        final PhongMaterial material2= new PhongMaterial();
+        material2.setDiffuseColor(Color.rgb(255,237,160,0));
+        
+        final PhongMaterial material3 = new PhongMaterial();
+        material3.setDiffuseColor(Color.rgb(254,217,118,0));
+        
+        final PhongMaterial material4 = new PhongMaterial();
+        material4.setDiffuseColor(Color.rgb(254,178,76,0));
+        
+        final PhongMaterial material5 = new PhongMaterial();
+        material5.setDiffuseColor(Color.rgb(253,141,60,0));
+      
+        final PhongMaterial material6 = new PhongMaterial();
+        material6.setDiffuseColor(Color.rgb(252,78,42,0));
+        
+        final PhongMaterial material7 = new PhongMaterial();
+        material7.setDiffuseColor(Color.rgb(227,26,28,0));
+        
+        final PhongMaterial material8 = new PhongMaterial();
+        material8.setDiffuseColor(Color.rgb(177,0,38,0));
+        
+        for(int i=0;i<registeredList.size();i++) {
+        	ArrayList<Point2D> region = registeredList.get(i).get_region();
+        	
+        	Point3D spaceCoord0 = geoCoordTo3dCoord((float)region.get(0).getY(), (float)region.get(0).getX());
+        	Point3D spaceCoord2 = geoCoordTo3dCoord((float)region.get(2).getY(), (float)region.get(2).getX());
+        	Point3D milieu = spaceCoord0.midpoint(spaceCoord2);
+        	
+        	if(registeredList.get(i).get_nombre()<=tableauEchelle[0]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.03),diameter);
+                cyl.setMaterial(material1);
+                group.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[1]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.06),diameter);
+                cyl.setMaterial(material2);
+                group.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[2]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.09),diameter);
+                cyl.setMaterial(material3);
+                group.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[3]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.12),diameter);
+                cyl.setMaterial(material4);
+                group.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[4]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.15),diameter);
+                cyl.setMaterial(material5);
+                group.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[5]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.18),diameter);
+                cyl.setMaterial(material6);
+                group.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[6]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.21),diameter);
+                cyl.setMaterial(material7);
+                group.getChildren().add(cyl);
+        	}else if(registeredList.get(i).get_nombre()<=tableauEchelle[7]) {
+        		Cylinder cyl = createLine(milieu, milieu.multiply(1.24),diameter);
+                cyl.setMaterial(material8);
+                group.getChildren().add(cyl);
+        	}	
+            
+        }
+        parent.getChildren().addAll(group);
+	}
+	
+	/**
+	 * 
+	 * @param registeredList la liste d'enregistrements
+	 * @param labelLegende Notre liste de label pour la légende
+	 * @return un tableau de l'échelle de la légende
+	 */
+	public static int[] updateLegend(ArrayList<Enregistrement> registeredList,Label[] labelLegende) {
+		int max = registeredList.get(0).get_nombre();
+        int[] tableauEchelle = new int[8];
+        for(int i=0;i<8;i++) {
+        	tableauEchelle[i] = (i+1)*max/8;
+        	if(i>0 && i<8) {
+        		labelLegende[i-1].setText(""+tableauEchelle[i]);
+        	}
+        }
+        return tableauEchelle;
+	}
 	
 	/**
 	 * // From Rahel LÃ¼thy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
-	 * La fonction permet de dessiner des cylindre sur la Terre
+	 * La fonction permet de dessiner un cylindre sur la Terre
 	 * @param origin l'origine du cylindre
 	 * @param target l'endroit où le cylindre doit finir
 	 * @param diameter le diamétre du cylindre
@@ -249,7 +332,7 @@ public class Model {
     
     /**
      * Transforme un point 3D en point qui doit être sur la Terre
-     * @param p le point a transformé
+     * @param p le point a transformer
      * @return Point2D le point transformé
      */
     public static Point2D SpaceCoordToGeoCoord(Point3D p) {
@@ -268,13 +351,13 @@ public class Model {
     }
     
     /**
-     * La fonction qui permet d'afficher des quadrilatéres sur la Terre
-     * @param parent le group qui contient tous ce qui est affiché a l'écran
-     * @param topRight le point qui est en haut a droite du quadrilatére
-     * @param bottomRight le point qui est en bas a droite du quadrilatére
-     * @param bottomLeft le point qui est en bas a gauche du quadrilatére
-     * @param topLeft le point qui est en haut a gauche du quadrilatére
-     * @param material le materiel avec lequel on veut afficher le quadrilatére
+     * La fonction qui permet d'afficher des quadrilatères sur la Terre
+     * @param parent le group qui contient tout ce qui est affiché a l'écran
+     * @param topRight le point qui est en haut a droite du quadrilatère
+     * @param bottomRight le point qui est en bas a droite du quadrilatère
+     * @param bottomLeft le point qui est en bas a gauche du quadrilatère
+     * @param topLeft le point qui est en haut a gauche du quadrilatère
+     * @param material le materiel avec lequel on veut afficher le quadrilatère
      */
     private static void AddQuadrilateral(Group parent, Point3D topRight, Point3D bottomRight, Point3D bottomLeft, Point3D topLeft,
     		 PhongMaterial material) {

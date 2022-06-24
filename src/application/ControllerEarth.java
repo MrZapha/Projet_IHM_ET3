@@ -5,9 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import org.controlsfx.control.textfield.AutoCompletionBinding;
-import org.controlsfx.control.textfield.TextFields;
-
 import com.interactivemesh.jfx.importer.ImportException;
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import com.ludovic.vimont.GeoHashHelper;
@@ -32,7 +29,6 @@ import javafx.scene.PointLight;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -147,13 +143,12 @@ public class ControllerEarth implements Initializable {
         ambientLight.getScope().addAll(root3D);
         root3D.getChildren().add(ambientLight);
         
-      //Drawing from file, either Delphinidae.json or Selachii.json with a 50/50% chance
+        //Drawing from file, either Delphinidae.json or Selachii.json with a 50/50% chance
         Donne d = Donne.init();
         Label[] labelLegende = {label1,label2,label3,label4,label5,label6,label7};
         txtPreciGeo.setText("3");
         Model.firstDraw(earth,d,labelLegende);
         txtEspece.setText(d.get_list().get(0).get_nom());
-        
         
         // Create scene
         // ...
@@ -162,7 +157,7 @@ public class ControllerEarth implements Initializable {
         subscene.setFill(Color.GREY);
         pane3D.getChildren().addAll(subscene);
         
-        //Auto complete
+        //Text species input
         txtEspece.setOnKeyReleased(new EventHandler<KeyEvent>() {
         	@Override
         	public void handle(KeyEvent event) {
@@ -196,7 +191,7 @@ public class ControllerEarth implements Initializable {
                 		d = Donne.donne_From_URL(txtEspece.getText(),Integer.valueOf(txtPreciGeo.getText()));
                 	}
                 	
-                	if(d.get_list().size()!=0) {
+                	if(d.get_list().size()>0) {
                 		earth.getChildren().subList(1, earth.getChildren().size()).clear();
                 		Model.drawHistogram(earth,d,Integer.valueOf(txtPreciGeo.getText()),labelLegende);
                 	}else {
@@ -207,6 +202,7 @@ public class ControllerEarth implements Initializable {
             }
         });
         
+        //Lecture animation si les dates sont précisées
         btnLecture.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent ae) {
@@ -216,9 +212,13 @@ public class ControllerEarth implements Initializable {
                 		txtPreciGeo.setText("3");
                 	}
             		pause=false;
+            		stop=false;
             		earth.getChildren().subList(1, earth.getChildren().size()).clear();
             		int nbPas = (dateFin.getValue().getYear()-dateDebut.getValue().getYear()) / 5; 
             		pasActuel = 0;
+            		Donne leg = Donne.donne_From_URL_With_Date(txtEspece.getText(), Integer.valueOf(txtPreciGeo.getText()), dateDebut.getValue(), dateFin.getValue());
+            		int[] tableauEchelle = Model.updateLegend(leg.get_list(),labelLegende);
+            		
             		Donne d = Donne.donne_From_URL_With_Time_Interval(txtEspece.getText(),Integer.valueOf(txtPreciGeo.getText()),dateDebut.getValue(),5,nbPas);
             		
             		final long startNanoTime = System.nanoTime();
@@ -239,15 +239,16 @@ public class ControllerEarth implements Initializable {
 	    	        				pasActuel=0;
 	    	        			}
 	    	        			this.stop();
-	    	        		}else if(t%1000000<=0.1) {
+	    	        		}else if(t%6<=0.015) {
 	    	        			Donne dIntervalle = d.get_donne_with_this_intervalle(y1,y2);
-		                		Model.drawHistogram(earth, dIntervalle, Integer.valueOf(txtPreciGeo.getText()), labelLegende);
+		                		Model.drawHistogram(earth, dIntervalle, Integer.valueOf(txtPreciGeo.getText()), labelLegende,tableauEchelle);
+		                		annee1+=5;
+		    	        		annee2+=5;
+		    	        		y1 = LocalDate.of(annee1,dateDebut.getValue().getMonthValue(),dateDebut.getValue().getDayOfMonth());
+		    	        		y2 = LocalDate.of(annee2,dateDebut.getValue().getMonthValue(),dateDebut.getValue().getDayOfMonth());
+		    	        		pasActuel+=1;
 	    	        		}
-	    	        		annee1+=5;
-	    	        		annee2+=5;
-	    	        		y1 = LocalDate.of(annee1,dateDebut.getValue().getMonthValue(),dateDebut.getValue().getDayOfMonth());
-	    	        		y2 = LocalDate.of(annee2,dateDebut.getValue().getMonthValue(),dateDebut.getValue().getDayOfMonth());
-	    	        		pasActuel+=1;
+	    	        		
 	                	}
             		};
             		timer.start();
@@ -255,6 +256,7 @@ public class ControllerEarth implements Initializable {
             }     	
         });
         
+        //Pause animation
         btnPause.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent event) {	
@@ -262,6 +264,7 @@ public class ControllerEarth implements Initializable {
         	}
         });
         
+        //Arrêt animation
         btnStop.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent event) {	
@@ -273,6 +276,20 @@ public class ControllerEarth implements Initializable {
         		dateFin.getEditor().clear();
         	}
         });
+        
+        //Interaction liste d'espèces présentes sur un geohash
+        listEspece.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    @Override
+		    public void handle(MouseEvent mouseEvent) {
+		        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+		            if(mouseEvent.getClickCount() == 2){
+		            	String species = listEspece.getSelectionModel().getSelectedItem();
+		        		txtEspece.setText(species);
+		        		labelEspece.setText("");
+		            }
+		        }
+		    }
+		});
         
         //Clickable earth to get species
         subscene.addEventHandler(MouseEvent.ANY, event-> {
@@ -293,12 +310,14 @@ public class ControllerEarth implements Initializable {
         		
         		ListSignalement signalements = ListSignalement.set_Liste_Espece(txtLocaGeo.getText());
         		
+        		//ListView pour les espèces avec lesquelles on peut intéragir
         		ArrayList<String> listEspSignal = signalements.get_Liste_Espece();
         		ObservableList<String> itemsListView = FXCollections.observableArrayList(listEspSignal);
         		listEspece.setItems(itemsListView);
         		
         		ArrayList<Signalement> listSignal = signalements.get_List_Signalement();
         		
+        		//TreeView pour les champs
         		TreeItem<String> root = new TreeItem<String>("root");
         		root.setExpanded(true);
         		treeSignalement.setRoot(root);
