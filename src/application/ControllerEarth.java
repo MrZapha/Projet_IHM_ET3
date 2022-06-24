@@ -1,6 +1,7 @@
 package application;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -13,9 +14,9 @@ import com.ludovic.vimont.GeoHashHelper;
 import com.ludovic.vimont.Location;
 
 import Donnees.Donne;
-import application.Model;
 import Donnees.ListSignalement;
 import Donnees.Signalement;
+import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -31,6 +32,7 @@ import javafx.scene.PointLight;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -52,10 +54,8 @@ public class ControllerEarth implements Initializable {
 	@FXML
 	private TextField txtEspece;
 	
-	private static AutoCompletionBinding<String> auto;
-	
 	@FXML
-	private TextField txtLocaGeo;
+	private Label txtLocaGeo;
 	
 	@FXML
 	private TextField txtPreciGeo;
@@ -108,6 +108,10 @@ public class ControllerEarth implements Initializable {
 	@FXML
 	private Label label7;
 	
+	private static int pasActuel;
+	private static boolean stop = false;
+	private static boolean pause = false;
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
         //Create a Pane et graph scene root for the 3D content
@@ -145,10 +149,11 @@ public class ControllerEarth implements Initializable {
         
       //Drawing from file, either Delphinidae.json or Selachii.json with a 50/50% chance
         Donne d = Donne.init();
-        label1.setText("ou");
         Label[] labelLegende = {label1,label2,label3,label4,label5,label6,label7};
         txtPreciGeo.setText("3");
-        Model.firstDraw(earth,txtEspece,d,labelLegende);
+        Model.firstDraw(earth,d,labelLegende);
+        txtEspece.setText(d.get_list().get(0).get_nom());
+        
         
         // Create scene
         // ...
@@ -158,14 +163,12 @@ public class ControllerEarth implements Initializable {
         pane3D.getChildren().addAll(subscene);
         
         //Auto complete
-        //auto = TextFields.bindAutoCompletion(txtEspece, "");
         txtEspece.setOnKeyReleased(new EventHandler<KeyEvent>() {
         	@Override
         	public void handle(KeyEvent event) {
+        		stop=false;
         		if(txtEspece.getLength()>3) {
         			ObservableList<String> items = FXCollections.observableArrayList(Donne.completeSpecies(txtEspece.getText()));
-        			//auto.dispose();
-        			//auto = TextFields.bindAutoCompletion(txtEspece, items);	
         			labelEspece.setText("");
         		
         			if (items.size() == 0 && txtEspece.getLength() > 0 ) {
@@ -176,33 +179,99 @@ public class ControllerEarth implements Initializable {
         	}
         });
         
-        listEspece.setOnMouseClicked(new EventHandler<MouseEvent>() {
-		    @Override
-		    public void handle(MouseEvent mouseEvent) {
-		        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-		            if(mouseEvent.getClickCount() == 2){
-		            	String espece = listEspece.getSelectionModel().getSelectedItem();
-		            	txtEspece.setText(espece);
-		            }
-		        }
-		    }
-		});
-        
+        //Recherche et dessin des signalements de l'espèce
         btnValider.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent ae) {
-            	//auto.dispose();
             	//On veut que l'espèce existe donc label d'alerte vide
                 if (labelEspece.getText().length()==0) {
                 	//Précision GeoHash par défaut, on n'empêche pas l'utilisateur d'agir
                 	if(txtPreciGeo.getText().length()==0) {
                 		txtPreciGeo.setText("3");
                 	}
-                	Donne d = Donne.donne_From_URL(txtEspece.getText(),Integer.valueOf(txtPreciGeo.getText()));
-                	earth.getChildren().subList(1, earth.getChildren().size()).clear();
-                	Model.drawHistogram(earth,d,Integer.valueOf(txtPreciGeo.getText()),labelLegende);
+                	Donne d;
+                	if(dateDebut.getValue()!=null && dateFin.getValue()!=null) {
+                		d = Donne.donne_From_URL_With_Date(txtEspece.getText(),Integer.valueOf(txtPreciGeo.getText()),dateDebut.getValue(),dateFin.getValue());
+                	}else {
+                		d = Donne.donne_From_URL(txtEspece.getText(),Integer.valueOf(txtPreciGeo.getText()));
+                	}
+                	
+                	if(d.get_list().size()!=0) {
+                		earth.getChildren().subList(1, earth.getChildren().size()).clear();
+                		Model.drawHistogram(earth,d,Integer.valueOf(txtPreciGeo.getText()),labelLegende);
+                	}else {
+                		labelEspece.setTextFill(Color.RED);
+        				labelEspece.setText("Aucune/Plusieurs espèce(s) trouvée(s).");
+                	}
                 }
             }
+        });
+        
+        btnLecture.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent ae) {
+            	if(dateDebut.getValue()!=null && dateFin.getValue()!=null && labelEspece.getText().length()==0 && txtEspece.getLength()!=0) {
+            		//Valeur par défaut pas de blocage
+            		if(txtPreciGeo.getText().length()==0) {
+                		txtPreciGeo.setText("3");
+                	}
+            		pause=false;
+            		earth.getChildren().subList(1, earth.getChildren().size()).clear();
+            		int nbPas = (dateFin.getValue().getYear()-dateDebut.getValue().getYear()) / 5; 
+            		pasActuel = 0;
+            		Donne d = Donne.donne_From_URL_With_Time_Interval(txtEspece.getText(),Integer.valueOf(txtPreciGeo.getText()),dateDebut.getValue(),5,nbPas);
+            		
+            		final long startNanoTime = System.nanoTime();
+            		AnimationTimer timer = new AnimationTimer() {
+	                	
+            			int annee1 = dateDebut.getValue().getYear()+5*pasActuel;
+	        			int annee2 = annee1+5;
+	        			
+	        			LocalDate y1 = LocalDate.of(annee1,dateDebut.getValue().getMonthValue(),dateDebut.getValue().getDayOfMonth());
+	        			LocalDate y2 = LocalDate.of(annee2,dateDebut.getValue().getMonthValue(),dateDebut.getValue().getDayOfMonth());        			
+	                	
+	                	public void handle(long currentNanoTime) {
+	                		double t = (currentNanoTime - startNanoTime) / 1000000000.0;
+	                		System.out.println(t);
+
+	    	        		if(annee2>dateFin.getValue().getYear() | pause==true | stop==true) {
+	    	        			if(annee2>dateFin.getValue().getYear()) {
+	    	        				pasActuel=0;
+	    	        			}
+	    	        			this.stop();
+	    	        		}else if(t%1000000<=0.1) {
+	    	        			Donne dIntervalle = d.get_donne_with_this_intervalle(y1,y2);
+		                		Model.drawHistogram(earth, dIntervalle, Integer.valueOf(txtPreciGeo.getText()), labelLegende);
+	    	        		}
+	    	        		annee1+=5;
+	    	        		annee2+=5;
+	    	        		y1 = LocalDate.of(annee1,dateDebut.getValue().getMonthValue(),dateDebut.getValue().getDayOfMonth());
+	    	        		y2 = LocalDate.of(annee2,dateDebut.getValue().getMonthValue(),dateDebut.getValue().getDayOfMonth());
+	    	        		pasActuel+=1;
+	                	}
+            		};
+            		timer.start();
+            	}
+            }     	
+        });
+        
+        btnPause.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent event) {	
+        		pause=true;
+        	}
+        });
+        
+        btnStop.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent event) {	
+        		stop=true;
+        		pasActuel=0;
+        		earth.getChildren().subList(1, earth.getChildren().size()).clear();
+        		txtEspece.setText("");
+        		dateDebut.getEditor().clear();
+        		dateFin.getEditor().clear();
+        	}
         });
         
         //Clickable earth to get species
@@ -216,7 +285,6 @@ public class ControllerEarth implements Initializable {
         		double lonCursor = latLon.getY();
         		Location loc = new Location("selectedGeoHash",latCursor,lonCursor);
         		
-                //TODO Mettre espèces du GeoHash dans la listView et dans le TreeView
         		if(txtPreciGeo.getText().length()==0) {
         			txtPreciGeo.setText("3");
         		}
